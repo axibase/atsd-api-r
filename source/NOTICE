@@ -1,0 +1,9 @@
+R package to support querying ATSD data base.
+Copyright 2015 Axibase Corporation or its affiliates. All Rights Reserved.
+
+This R package was developed at Axibase Corporation (http://axibase.com/).
+The package supports quering Axibase Time-Series Database (ATSD).
+ATSD is a purpose-built solution for analyzing and reporting on massive 
+volumes of time-series data 
+(http://axibase.com/products/axibase-time-series-database/).
+
