@@ -2,12 +2,12 @@ skip_on_cran()
 
 context("Test the save_series() function.")
 
-connection8 <- "/home/user001/8_connection.txt"
-connection4 <- "/home/user001/4_connection.txt"
-connection2 <- "/home/user001/2_connection.txt"
-
 test_that("save_series() works with http connection", {
-  
+  skip_on_cran()
+
+  connection8 <- "/home/user001/8_connection.txt"
+  connection4 <- "/home/user001/4_connection.txt"
+  connection2 <- "/home/user001/2_connection.txt"
   capture.output(set_connection(file = connection8), file = 'NUL')
   dfr <- read.csv("/home/user001/series_data.csv")
   capture.output(save_series(dfr, time_col = 2, time_format = "ms", 
@@ -28,7 +28,7 @@ test_that("save_series() works with http connection", {
   expect_equal(q$r_test_tag3[1], "value3")
 })
 
-unlink("/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/source/tests/testthat/NUL")
+# unlink("/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/source/tests/testthat/NUL")
 
 # 
 # 

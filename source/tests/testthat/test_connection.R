@@ -1,12 +1,10 @@
-skip_on_cran()
-
 library("atsd", quietly = TRUE, verbose = FALSE)
 cat("\n")
 
 context("Test connection management.")
 
 test_that("set_connection() correctly changes connection variables", {
-  
+  skip_on_cran()
   # set all variables from arguments
   capture.output(set_connection(user = "user01"), file = 'NUL')
   capture.output(set_connection(encryption = "tls1"), file = 'NUL')
@@ -37,7 +35,7 @@ test_that("set_connection() correctly changes connection variables", {
 })
 
 test_that("save_connection() correctly save connection variables to file", {
-  
+  skip_on_cran()
   # save current values of connection parameters into configuration file
   save_connection()
   

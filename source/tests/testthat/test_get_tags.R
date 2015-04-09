@@ -1,18 +1,12 @@
-skip_on_cran()
-
-library("atsd", quietly = TRUE, verbose = FALSE)
-
-skip_on_cran()
-
 library("atsd", quietly = TRUE, verbose = FALSE)
 
 context("Test the get_series_tags() function.")
 
-connection8 <- "/home/user001/8_connection.txt"
-connection4 <- "/home/user001/4_connection.txt"
-connection2 <- "/home/user001/2_connection.txt"
-
 test_that("get_entities() works with http connection", {
+  skip_on_cran()
+  connection8 <- "/home/user001/8_connection.txt"
+  connection4 <- "/home/user001/4_connection.txt"
+  connection2 <- "/home/user001/2_connection.txt"
   
   capture.output(set_connection(file = connection8), file = 'NUL')
   capture.output(st <- get_series_tags(metric = "disk_used_percent"),
