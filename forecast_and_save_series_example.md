@@ -6,7 +6,7 @@
 
 ### Introduction
 
-In this demo we fetch a time-series from ATSD. Then we forecast this time-series with help of functions from **stats** and **forecast** R packages. Then we compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally we save all forecasts in ATSD.
+In this demo we fetch time-series from ATSD. Then we forecast this time-series with help of functions from **stats** and **forecast** R packages. Then we compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally we save all forecasts in ATSD.
 
 ### Establish connection with ATSD
 
@@ -182,7 +182,7 @@ diss.EUCL(coredata(data_set), coredata(hw_forecast))
 #> y 2.54965
 ```
 
-You can see that Holt Winters method of the **stats** package gives slightly better result then Holt Winters implemented in ATSD.
+You can see that Holt Winters method of the **stats** package gives a slightly better result than the Holt Winters method implemented in ATSD.
 
 We can save the forecasts in ATSD.
 
@@ -199,6 +199,7 @@ for (fcst in names(r_forecasts)) {
 ```
 
 Now forecasts are saved in ATSD and we can view them through the ATSD Export page, and view them in ATSD's charts.
+
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_export_tab.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts_zoomed_in.png)
