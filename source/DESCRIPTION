@@ -1,6 +1,6 @@
 Package: atsd
 Title: Support Querying Axibase Time-Series Database
-Version: 1.0.8441.1
+Version: 1.1.8710
 Date: 2015-03-16
 Author: Axibase Corporation
 Maintainer: Mikhail Zvagelsky <mikhail.zvagelsky@axibase.com>
