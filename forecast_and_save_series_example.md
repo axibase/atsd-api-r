@@ -6,7 +6,7 @@
 
 ### Introduction
 
-In this demo we fetch a time-series from ATSD. Then we forecast this time-series with help of functions from **stats** and **forecast** R packages. Then we compare the forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally we save all forecasts in ATSD.
+In this demo we fetch a time-series from ATSD. Then we forecast this time-series with help of functions from **stats** and **forecast** R packages. Then we compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally we save all forecasts in ATSD.
 
 ### Establish connection with ATSD
 
@@ -19,7 +19,7 @@ require("stats")
 require("forecast")
 ```
 
-We store the ATSD url, user name and password in a file. Then we can set connection with ATSD server:
+We store the ATSD url, user name and password in a file. Then we can establish connection with ATSD server:
 
 ``` r
 set_connection(file = "/home/user001/8_connection.txt")
@@ -37,14 +37,14 @@ dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
 dup <- to_zoo(dup, value = "Avg")
 ```
 
-We will use the first 2 weeks, March 17 -- March 30, as training set to build prediction models. And we will forecast for the last two days March 31 and April 1.
+We will use the first 2 weeks, March 17 -- March 30, as practice set to build prediction models. And we will forecast the last two days March 31 and April 1.
 
 ``` r
 training_set <- window(dup, end = as.POSIXct("2015-03-30 23:50:00", origin="1970-01-01", tz="GMT"))
 data_set <- window(dup, start = as.POSIXct("2015-03-31 00:00:00", origin="1970-01-01", tz="GMT"))
 ```
 
-First of all we retrieve 2 days forecast from ATSD. In this case ATSD uses Holt-Winters method to predict the behavior of the time-series.
+First of all we retrieve a 2 day forecast from ATSD. In this case ATSD uses Holt-Winters method to predict the behavior of the time-series.
 
 ``` r
 atsd_forecast <- query(metric = "disk_used_percent", entity = "nurswgvml006",
@@ -198,7 +198,7 @@ for (fcst in names(r_forecasts)) {
 }
 ```
 
-Now forecasts are saved in ATSD and we can view them through the ATSD Export page, and view it in ATSD's charts.
+Now forecasts are saved in ATSD and we can view them through the ATSD Export page, and view them in ATSD's charts.
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_export_tab.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts_zoomed_in.png)
