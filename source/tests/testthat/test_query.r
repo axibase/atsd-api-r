@@ -20,7 +20,9 @@ test_that("query() works with http connection", {
                             interpolation = "Linear",
                             aggregate_statistics = c("Avg", "Min", "Max")),
                  file = 'NUL')
-  expect_equal_to_reference(q, "query1.rds")
+  expect_equal(nrow(q), 144)
+  expect_equal(q$metric[1], "disk_used_percent")
+  #expect_equal_to_reference(q, "query1.rds")
 
 })
 
