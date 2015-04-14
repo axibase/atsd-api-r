@@ -85,30 +85,18 @@ test_that("save_connection() correctly save connection variables to file", {
   save_connection()
 })
 
+test_that("set_connection() throw error for wrong file argument", {
+  skip_on_cran()
+  # try set connection from non-existing file
+  expect_error(
+    suppressMessages(
+      suppressWarnings(
+        set_connection(file = "/home/user001/wrong_file_name.txt"))))
+  # the connection variables should be the same
+  connection_txt <- capture.output(show_connection())
+  expect_equal(connection_txt[1], "url = http://host_name:port_number")
+  expect_equal(connection_txt[2], "user = atsd_user_name")
+  expect_equal(connection_txt[3], "password = atsd_user_password")
+  expect_equal(connection_txt[4], "verify = no")
+})
 
-
-
-
-# test_dir <- "/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/tests/"
-# connection8088 <- "/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/tests/8088_connection.txt"
-# connection8443 <- "/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/tests/8443_connection.txt"
-# 
-# 
-# 
-# show_connection()
-# set_connection(user = "misha"); show_connection()
-# set_connection(verify = "yes"); show_connection()
-# set_connection(); show_connection()
-# set_connection(file = paste0(test_dir, "fake_connection.txt")); show_connection()
-# save_connection(user = "misha", verify = "yes")
-# set_connection(); show_connection()
-# set_connection(file = connection8088); show_connection()
-# set_connection(file = "/home/user001/wrong_file_name.txt"); show_connection()
-# set_connection(file = connection8088); show_connection()
-# m1 <- get_metrics()
-# e1 <- get_entities()
-# d1 <- query(metric = "disk_used_percent", selection_interval = "1-Hour")
-# set_connection(file = connection8443)
-# d2 <- query(metric = "message_writes_per_second", selection_interval = "1-Day")
-# m2 <- get_metrics()
-# e2 <- get_entities(tags = "*")

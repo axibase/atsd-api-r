@@ -5,8 +5,6 @@ context("Test the get_metrics() function.")
 test_that("get_metrics() works with http connection", {
   skip_on_cran()
   connection8 <- "/home/user001/8_connection.txt"
-  connection4 <- "/home/user001/4_connection.txt"
-  connection2 <- "/home/user001/2_connection.txt"
   capture.output(set_connection(file = connection8), file = 'NUL')
   capture.output(m <- get_metrics(limit = 10),
                  file = 'NUL')
@@ -14,9 +12,38 @@ test_that("get_metrics() works with http connection", {
   expect_equal(nrow(m), 10)
 })
 
+# test_that("get_metrics() works with https connection with certificate checking", {
+#   skip_on_cran()
+#   connection2 <- "/home/user001/4_connection.txt"
+#   capture.output(set_connection(file = connection4), file = 'NUL')
+#   capture.output(m <- get_metrics(limit = 7, active="true"), file = 'NUL')
+#   #expect_equal_to_reference(m, "get_metrics1.rds")
+#   expect_equal(nrow(m), 7)
+#   capture.output(m <- get_metrics(limit = 11, active = "true", tags = "table", 
+#                                   expression = "tags.table != ''"), file = 'NUL')
+#   expect_equal(nrow(m), 11)
+#   capture.output(m <- get_metrics(expression = "name like 'nmon*' and tags.table like '*CPU*'"), 
+#                  file = 'NUL')
+#   expect_match(m$name[1], "nmon", ignore.case = TRUE)
+#   expect_match(m$tags.table[1], "cpu", ignore.case = TRUE)
+# })
 
 
-
+test_that("get_metrics() works with https connection without certificate checking", {
+  skip_on_cran()
+  connection2 <- "/home/user001/2_connection.txt"
+  capture.output(set_connection(file = connection2), file = 'NUL')
+  capture.output(m <- get_metrics(limit = 7, active="true"), file = 'NUL')
+  #expect_equal_to_reference(m, "get_metrics1.rds")
+  expect_equal(nrow(m), 7)
+  capture.output(m <- get_metrics(limit = 11, active = "true", tags = "table", 
+                                  expression = "tags.table != ''"), file = 'NUL')
+  expect_equal(nrow(m), 11)
+  capture.output(m <- get_metrics(expression = "name like 'nmon*' and tags.table like '*CPU*'"), 
+                 file = 'NUL')
+  expect_match(m$name[1], "nmon", ignore.case = TRUE)
+  expect_match(m$tags.table[1], "cpu", ignore.case = TRUE)
+})
 
 
 

@@ -5,15 +5,19 @@ context("Test the get_series_tags() function.")
 test_that("get_entities() works with http connection", {
   skip_on_cran()
   connection8 <- "/home/user001/8_connection.txt"
-  connection4 <- "/home/user001/4_connection.txt"
-  connection2 <- "/home/user001/2_connection.txt"
-  
   capture.output(set_connection(file = connection8), file = 'NUL')
   capture.output(st <- get_series_tags(metric = "disk_used_percent"),
                  file = 'NUL')
   expect_equal_to_reference(st$tags.file_system, "get_series_tags1.rds")
 })
 
+test_that("get_entities() works with https connection without certificate checking", {
+  skip_on_cran()
+  connection2 <- "/home/user001/2_connection.txt"
+  capture.output(set_connection(file = connection2), file = 'NUL')
+  capture.output(st <- get_series_tags(metric = "disk_used_percent"), file = 'NUL')
+  expect_equal(all(c("entity", "lastInsertTime", "tags.mount_point", "tags.file_system") %in% names(st)), TRUE)
+})
 
 # 
 # test_dir <- "/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/tests/"

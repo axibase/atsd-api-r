@@ -34,7 +34,7 @@ get_connection_data <- function(config_file = NULL) {
   )
   if (config_file == "" || is.null(lines)) {
     message(paste("It seems that ", from, "does not exist."))
-    return(c(NA, NA, NA, NA, NA, "false"))
+    stop("Wrong 'file' argument.", call. = FALSE)
   }
   url <- get_entry(lines, "url")
   # delete last / if it is
