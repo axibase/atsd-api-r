@@ -79,6 +79,10 @@ test_that("save_connection() correctly save connection variables to file", {
   connection_txt <- capture.output(show_connection())
   expect_match(connection_txt[1], "8088$")
   expect_equal(connection_txt[4], "verify = NA")
+  
+  # make configuration file clean
+  capture.output(set_connection(file = "/home/user001/fake_connection.txt"), file = 'NUL')
+  save_connection()
 })
 
 

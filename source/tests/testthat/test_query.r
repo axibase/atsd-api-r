@@ -1,5 +1,3 @@
-skip_on_cran()
-
 library("atsd", quietly = TRUE, verbose = FALSE)
 
 context("Test the query() function.")

@@ -3,7 +3,7 @@ title: "How to Use the atsd Package to Communicate with Axibase Time-Series Data
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{How to use the atsd package to fetch data from ATSD}
+  %\VignetteIndexEntry{How to Use the atsd Package to Communicate with Axibase Time-Series Database}
   %\VignetteEngine{knitr::knitr}
   %\usepackage[utf8]{inputenc}
 ---
@@ -32,7 +32,7 @@ panderOptions('table.split.table', 100)
 ## 1. <a name = "overview"></a> Package Overview
 The package allows you query time-series data and statistics from 
 [Axibase Time-Series Database](http://axibase.com/axibase-time-series-database/) (ATSD)
-and save time-series in ATSD.
+and save time-series data in ATSD.
 List of package functions:
 
 - [set_connection()](#set_connection), 
@@ -52,15 +52,15 @@ time-series with built-in functions in zoo package.
 [Return to Contents](#contents)
 
 ## 2. <a name = "connecting"></a> Connecting to ATSD
-Execute `library(atsd)`&nbsp; to start working with atsd package.
+Execute `library(atsd)`&nbsp; to start working with the atsd package.
 The connection parameters are loaded from the package configuration file,
 <tt><font color = "SaddleBrown">atsd/connection.config</font></tt>,&nbsp;
-which is located in atsd package folder.
+which is located in the atsd package folder.
 The command
 ```{r, eval = FALSE}
 installed.packages()["atsd", "LibPath"]
 ```
-shows you where atsd package folder is.
+shows you where the atsd package folder is.
 Open a text editor and modify the configuration file.
 It should look as follows:   
 
@@ -135,7 +135,7 @@ The function retrieves historical time-series data or forecasts from ATSD.
     The end time of the selection interval, for example, `end_time = "date('2014-12-27')"`.
     If not provided, the current time will be used. 
     Specify the date and time, or use one of the supported expressions:
-    [end time syntax](<http://axibase.com/axibase-time-series-database/screenshots-4/end-time/>).
+    [end time syntax](<http://axibase.com/products/axibase-time-series-database/visualization/end-time/>).
     For example, 'current_day' would set the end of selection interval 
     to 00:00:00 of the current day.
     
@@ -173,7 +173,7 @@ The function retrieves historical time-series data or forecasts from ATSD.
 
 ```{r, eval = TRUE, echo=FALSE, results='hide'}
 library(atsd)
-set_connection(file = "/home/user001/8088_connection.txt")
+set_connection(file = "/home/user001/8_connection.txt")
 ```
 
 ```{r, eval = TRUE, results='hide'}
@@ -201,22 +201,42 @@ query(metric = "disk_used_percent", entity_group = "Linux", tags = c("mount_poin
 
 [Return to Contents](#contents)
 
-## 4. <a name = "zoo"></a>Transforming Data Frame to zoo Object
+## 4. <a name = "zoo"></a>Transforming Data Frame to a zoo Object
 
 <a name = "to_zoo"></a>
 **Function name:** to_zoo()
 
 **Description:**
-The function constructs a zoo object based on the 'Timestamp' and 'Value' columns of the 
-given data frame. Information from other columns will be ignored.
-
-
+ The function builds a zoo object from the given data frame. 
+ The 
+ <tt><font color = "SaddleBrown">timestamp</font></tt>&nbsp;
+ argument provides
+ a column of the data frame which is used as the index for the zoo object.
+ The 
+ <tt><font color = "SaddleBrown">value</font></tt>&nbsp;
+ argument indicates the series which will be saved in a zoo object.
+ If several columns are listed in the
+ <tt><font color = "SaddleBrown">value</font></tt>&nbsp;
+ argument, they will all be saved in a multivariate
+ zoo object.
+ Information from other columns is ignored.
+ To use this function the 'zoo' package should be installed.
+ 
 **Returns object:** [zoo](http://cran.r-project.org/web/packages/zoo/index.html) object
 
 **Arguments:**
 
  - <tt><font color = "SaddleBrown">dfr</font></tt>&nbsp; (required, data frame)   
-   The data frame with 'Timestamp' and 'Value' columns.
+   The data frame.
+
+ - <tt><font color = "SaddleBrown">timestamp</font></tt>&nbsp; (optional, character or numeric)   
+ Name or number of the column with timestamps. By default, 
+ `timestamp = "Timestamp"`.
+
+ -  <tt><font color = "SaddleBrown">value</font></tt>&nbsp; 
+ (optional, character vector or numeric vector)   
+ Names or numbers of columns with series values. 
+ By default, `value = "Value"`.
 
 **Examples:**
 
@@ -376,7 +396,7 @@ entities$name
 
 **Description:** 
 The function determines time series collected by ATSD for a given metric.
-For each time series it lists tags associated whith the series,
+For each time series it lists tags associated with the series,
 and last time the series was updated. 
 The list of fetched time series is based on data stored on disk 
 for the last 24 hours.
@@ -414,7 +434,7 @@ Each row of the data frame corresponds to a time series and its tags:
 
 **Examples:**
 ```{r, eval = TRUE, echo=FALSE, results='hide'}
-set_connection(file = "/home/user001/8088_connection.txt")
+set_connection(file = "/home/user001/8_connection.txt")
 ```
 ```{r, eval = TRUE, results='hide'}
 # get all time series and their tags collected by ATSD for the "disk_used_percent" metric
@@ -431,14 +451,14 @@ get_series_tags(metric = "disk_used_percent", entity = "nurswgvml007")
 
 [Return to Contents](#contents)
 
-## 8. <a name = "saving_ts"></a> Saving time series in ATSD
+## 8. <a name = "saving_ts"></a> Saving Time-series in ATSD
 
 <a name = "save_series"></a>
 **Function name:** save_series()
 
 **Description:** 
-Save time series from given data frame into ATSD.
-The data frame should have a column with time stamps and
+Save time-series from the data frame into ATSD.
+The data frame should have a column with timestamps and
 at least one numeric column with values of a metric.
 
 **Returns object:** NULL
@@ -450,36 +470,54 @@ at least one numeric column with values of a metric.
   at least one numeric column with values of a metric.
  
  - <tt><font color = "SaddleBrown">time_col</font></tt>&nbsp; (optional, numeric or character)   
-  Number or name of the column with timestaps. Default value is 1.
+  Number or name of the column with the timestamps. Default value is 1.
   For example, 
   <tt><font color = "SaddleBrown">time_col = 1</font></tt>,&nbsp; or 
   <tt><font color = "SaddleBrown">time_col = "Timestamp"</font></tt>.&nbsp;
-  Read "Time stamps format" section for suppported time stamps formats.
+  Read "Timestamps format" section below for supported timestamp classes and formats.
  
  - <tt><font color = "SaddleBrown"> time_format</font></tt>&nbsp; (optional, string)   
- Optional string argument, indicates format of time stamps.
- This argument is used in the case when time stamps format is not clear from their class.
- The value of this argument can be one of strings: `"ms"` (for epoch milliseconds), 
- `"sec"` (for epoch seconds), or format string, 
+ Optional string argument, indicates format of timestamps.
+ This argument is used in the case when timestamp format is not clear from their class.
+ The value of this argument can be one of the following: `"ms"` (for epoch milliseconds), 
+ `"sec"` (for epoch seconds), or a format string, 
  for example `"\%Y-\%m-\%d \%H:\%M:\%S"`.
- This format string will be used to convert provided time stamps
- to epoch milliseconds before storing time stamps into ATSD.
- Read "Time stamps format" section for details.
+ This format string will be used to convert the provided timestamps
+ to epoch milliseconds before storing the timestamps in ATSD.
+ Read "Timestamp format" section for details.
  
  - <tt><font color = "SaddleBrown"> tz</font></tt>&nbsp; (optional, string)   
- By default, `tz = "GMT"`. Specify time zone, when time stamps 
- are strings formatted as setted in the 
+ By default, `tz = "GMT"`. Specify time zone, when timestamps 
+ are strings formatted as described in the 
  <tt><font color = "SaddleBrown">time_format</font></tt>&nbsp;
  argument.
  For example, `tz = "Australia/Darwin"`.
- Veiw the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for
- the list of possible values.
+ View the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for
+ a list of possible values.
  
  - <tt><font color = "SaddleBrown"> metric_col</font></tt>&nbsp; (required, numeric or character vector)   
  Specifies numbers or names of the columns 
- where metrics values are stored.
+ where metric values are stored.
  For example, `metric_col = c(2, 3, 4)`, or `metric_col = c("Value", "Avg")`.
- 
+ If 
+ <tt><font color = "SaddleBrown">metric_name</font></tt>&nbsp; 
+ argument is not given, then names of columns, in lower case,
+ are used as metric names when saving them in ATSD.
+
+ - <tt><font color = "SaddleBrown">metric_name</font></tt>&nbsp; (optional, character vector)   
+ Specifies metric names. The series indicated by 
+ <tt><font color = "SaddleBrown">metric_col</font></tt>&nbsp;
+ argument are saved in ATSD along with metric names, provided by the 
+ <tt><font color = "SaddleBrown">metric_name</font></tt>&nbsp;.
+ So the number and order of names in the 
+ <tt><font color = "SaddleBrown">metric_name</font></tt>&nbsp;
+ should match to columns in 
+ \<tt><font color = "SaddleBrown">metric_col</font></tt>&nbsp;.
+ If 
+ <tt><font color = "SaddleBrown">metric_name</font></tt>&nbsp; 
+ argument is not provided, then names of columns, in lower case,
+ are used as metric names when saving them in ATSD.
+
  - <tt><font color = "SaddleBrown"> entity_col</font></tt>&nbsp; (optional, numeric or character)   
  Optional argument, should be provided if the entity argument is not given. 
  Number or name of a column with entities.
@@ -492,50 +530,50 @@ at least one numeric column with values of a metric.
  Name of the entity.
  
  - <tt><font color = "SaddleBrown"> tags_col</font></tt>&nbsp; (optional, numeric or character vector)   
- Lists numbers or names of the columns containing values of tags.
+ Lists numbers or names of the columns containing tag values.
  So the name of a column is a tag name, and values in the column
  are the tag values.
  
  - <tt><font color = "SaddleBrown"> tags</font></tt>&nbsp; (optional, character vector)   
  Lists tags and their values in "tag=value" format.
- Each provided tag stick to each series. Witespace symbols are ignored.
+ Each indicated tag will be saved with each series.
     
  - <tt><font color = "SaddleBrown">verbose</font></tt>&nbsp; (optional, string)   
     If <tt>verbose = FALSE</tt>,&nbsp; then all console output will be suppressed.
 
-**Time stamps format.**
+**Timestamp format.**
 
- The list of allowed time stamps types.   
+ The list of allowed timestamp types.   
 
  - Numeric, in epoch milliseconds or epoch seconds. In that case `time_format = "ms"`
  or `time_format = "sec"` should be used, and time zone argument 
  <tt><font color = "SaddleBrown">tz</font></tt>&nbsp; is ignored.
 
- - Object of one of types `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package 
+ - Object of one of type `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package 
  or `timeDate` from the `timeDate` package.
  In that case arguments 
  <tt><font color = "SaddleBrown">time_format</font></tt>&nbsp; and 
  <tt><font color = "SaddleBrown">tz</font></tt>&nbsp; are ignored.
  
- - String, for example, "2015-01-03 10:07:15". In that case 
+ - String, for example, "2015-01-03 10:07:15". In this case 
  <tt><font color = "SaddleBrown">time_format</font></tt>&nbsp;
- argument should specify which format string is used for the time stamps.
+ argument should specify which format string is used for the timestamps.
  For example, `time_format = "\%Y-\%m-\%d \%H:\%M:\%S"`.
  Type `?strptime` to see list of format symbols.
- This format string will be used to convert provided time stamps
- to epoch milliseconds before store time stamps in ATSD.
+ This format string will be used to convert provided timestamps
+ to epoch milliseconds before storing the timestamps in ATSD.
  So time zone, as written in 
  <tt><font color = "SaddleBrown">tz</font></tt>&nbsp; argument, and standard 
  origin "1970-01-01 00:00:00" are used for conversion. In fact conversion is done with use 
  of command:
  `as.POSIXct(time_stamp, format = time_format, origin="1970-01-01", tz = tz)`.
  
- Note that time stamps will be stored in epoch milliseconds. So if you put some data into ATSD
- and then get it back, the time stamps will refer to the same time but in GMT time zone.
- For example, if you save time stamp `"2015-02-15 10:00:00"` with 
- `tz = "Australia/Darwin"` in ATSD, and then fetch it back, you will get time stamp 
+ Note that timestamps will be stored in epoch milliseconds. So if you put some data into ATSD
+ and then retrieve it back, the timestamps will refer to the same time but in GMT time zone.
+ For example, if you save timestamp `"2015-02-15 10:00:00"` with 
+ `tz = "Australia/Darwin"` in ATSD, and then retrieve it back, you will get the timestamp 
  `"2015-02-15 00:30:00"` because Australia/Darwin
- time zone has +09:30 shift relatively GMT zone.
+ time zone has a +09:30 shift relative to the GMT zone.
  
 **Entity specification**
  
@@ -543,25 +581,25 @@ at least one numeric column with values of a metric.
  <tt><font color = "SaddleBrown">entity</font></tt>&nbsp; or 
  <tt><font color = "SaddleBrown">entity_col</font></tt>&nbsp; arguments.
  In the first case all series will have the same entity.
- In the second case, if the column of the data frame,
- specified by 
- <tt><font color = "SaddleBrown">entity_col</font></tt>&nbsp; contains several entities,
- then that entities will be saved along with corresponding series.
+ In the second case, 
+ entities specified in 
+ <tt><font color = "SaddleBrown">entity_col</font></tt>&nbsp; 
+ column will be saved along with corresponding series.
  
 **Tags specification**
 
  The 
  <tt><font color = "SaddleBrown">tags_col</font></tt>&nbsp;
- argument points which columns of the data frame
- keep tags of time series. The name of each column specified by the
+ argument indicates which columns of the data frame
+ keeps the time-series tags. The name of each column specified by the
  <tt><font color = "SaddleBrown">tags_col</font></tt>&nbsp;
  argument is a tag name, 
- and the values in the column are the tag values.
+ and the values in the column are tag values.
  
- Before storing in ATSD the data frame will be splitted to several data frames,
- each of them has unique entity and unique list of tags values.
- This entity and tags are stored in ATSD along with time series from such data frame.
- NA's and missing values in time series will be ignored.
+ Before storing the series in ATSD, the data frame will be split into several data frames,
+ each of them has a unique entity and unique list of tag values.
+ This entity and tags are stored in ATSD along with the time-series from the data frame.
+ NA's and missing values in time-series will be ignored.
  
  In 
  <tt><font color = "SaddleBrown">tags</font></tt>&nbsp;
@@ -573,12 +611,12 @@ at least one numeric column with values of a metric.
 
 **Examples:**
 ```{r, eval = FALSE, echo=FALSE, results='hide'}
-set_connection(file = "/home/user001/8088_connection.txt")
+set_connection(file = "/home/user001/8_connection.txt")
 ```
 ```{r, eval = FALSE, results='hide'}
-# Save time-series from 3, 4, 5 columns of data frame dfr.
-# Time stamps are saved as strings in 2nd column and their format string and time zone are provided.
-# Entities ang tags are in columns 1, 6, 7.
+# Save time-series from columns 3, 4, 5 of data frame dfr.
+# Timestamps are saved as strings in 2nd column and their format string and time zone are provided.
+# Entities and tags are in columns 1, 6, 7.
 # All saved series will have tag "os_type" with value "linux".
 save_series(dfr, time_col = 2, time_format = "%Y/%m/%d %H:%M:%S", tz = "Australia/Darwin", 
             metric_col = c(3, 4, 5), entity_col = 1, tags_col = c(6, 7), tags = "os_type = linux")

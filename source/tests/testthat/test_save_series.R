@@ -1,5 +1,3 @@
-skip_on_cran()
-
 context("Test the save_series() function.")
 
 test_that("save_series() works with http connection", {
@@ -26,9 +24,10 @@ test_that("save_series() works with http connection", {
   expect_equal(q$r_test_t_one[1], "one")
   expect_equal(q$r_test_t_two[1], 1)
   expect_equal(q$r_test_tag3[1], "value3")
+  unlink("/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/source/tests/testthat/NUL")
 })
 
-# unlink("/home/mikhail/axibase/scripts/reading_data/atsd-api-r/trunk/source/tests/testthat/NUL")
+
 
 # 
 # 

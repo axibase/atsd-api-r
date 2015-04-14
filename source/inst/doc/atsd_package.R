@@ -16,7 +16,7 @@ panderOptions('table.split.table', 100)
 
 ## ----, eval = TRUE, echo=FALSE, results='hide'---------------------------
 library(atsd)
-set_connection(file = "/home/user001/8088_connection.txt")
+set_connection(file = "/home/user001/8_connection.txt")
 
 ## ----, eval = TRUE, results='hide'---------------------------------------
 # get historic data for the given entity, metric, and selection_interval
@@ -80,7 +80,7 @@ entities <- get_entities(expression = "name like 'nur*' and lower(tags.app) like
 entities$name
 
 ## ----, eval = TRUE, echo=FALSE, results='hide'---------------------------
-set_connection(file = "/home/user001/8088_connection.txt")
+set_connection(file = "/home/user001/8_connection.txt")
 
 ## ----, eval = TRUE, results='hide'---------------------------------------
 # get all time series and their tags collected by ATSD for the "disk_used_percent" metric
@@ -95,12 +95,12 @@ pandoc.table(head(tags, 3), style = "grid")
 #  get_series_tags(metric = "disk_used_percent", entity = "nurswgvml007")
 
 ## ----, eval = FALSE, echo=FALSE, results='hide'--------------------------
-#  set_connection(file = "/home/user001/8088_connection.txt")
+#  set_connection(file = "/home/user001/8_connection.txt")
 
 ## ----, eval = FALSE, results='hide'--------------------------------------
-#  # Save time-series from 3, 4, 5 columns of data frame dfr.
-#  # Time stamps are saved as strings in 2nd column and their format string and time zone are provided.
-#  # Entities ang tags are in columns 1, 6, 7.
+#  # Save time-series from columns 3, 4, 5 of data frame dfr.
+#  # Timestamps are saved as strings in 2nd column and their format string and time zone are provided.
+#  # Entities and tags are in columns 1, 6, 7.
 #  # All saved series will have tag "os_type" with value "linux".
 #  save_series(dfr, time_col = 2, time_format = "%Y/%m/%d %H:%M:%S", tz = "Australia/Darwin",
 #              metric_col = c(3, 4, 5), entity_col = 1, tags_col = c(6, 7), tags = "os_type = linux")
