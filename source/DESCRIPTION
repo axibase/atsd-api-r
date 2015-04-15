@@ -14,5 +14,5 @@ Depends: R (>= 3.1.2)
 License: Apache License 2.0
 Imports: RCurl (>= 1.95.4.5), httr (>= 0.6.1)
 Suggests: zoo, knitr, pander, chron, timeDate,
-    testthat
-VignetteBuilder: knitr
+    testthat, R.rsp
+VignetteBuilder: R.rsp

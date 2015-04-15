@@ -165,8 +165,11 @@ Distances between two time-series can be calculated with functions implemented
 in the **TSdist** and **TSclust** R packages.
 We use the Euclidean distance as measure of dissimilarity.
 
-```{r}
+```{r, results = 'hide'}
 require("TSclust")
+```
+
+```{r}
 diss.EUCL(coredata(data_set), coredata(atsd_forecast))
 diss.EUCL(coredata(data_set), coredata(arima_forecast))
 diss.EUCL(coredata(data_set), coredata(nn_forecast))

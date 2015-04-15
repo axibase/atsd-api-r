@@ -154,17 +154,6 @@ We can calculate difference between the forecasts and real data. Distances betwe
 
 ``` r
 require("TSclust")
-#> Loading required package: TSclust
-#> Loading required package: wmtsa
-#> Loading required package: splus2R
-#> Loading required package: ifultools
-#> Loading required package: MASS
-#> Loading required package: pdc
-#> Loading required package: cluster
-#> KernSmooth 2.23 loaded
-#> Copyright M. P. Wand 1997-2009
-#> Warning in rgl.init(initValue, onlyNULL): RGL: GLX extension missing on server
-#> Warning in fun(libname, pkgname): error in rgl_init
 diss.EUCL(coredata(data_set), coredata(atsd_forecast))
 #>          x
 #> y 2.593172
@@ -204,6 +193,7 @@ Now forecasts are saved in ATSD and we can view them through the ATSD Export pag
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts_zoomed_in.png)
 
-
+View the above example in Chart Lab: 
+[http://axibase.com/chartlab/01c588eb](http://axibase.com/chartlab/01c588eb)
 
 

@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How to Use the atsd Package to Communicate with Axibase Time-Series Database}
   %\VignetteEngine{knitr::knitr}
-  %\usepackage[utf8]{inputenc}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo = FALSE}
@@ -656,7 +656,7 @@ To get metrics with a user-defined tag 'table' equal to 'System':
 # get metrics whose tag 'table' is equal to 'System'
 metrics <- get_metrics(expression = "tags.table = 'System'", tags = "*")
 ```
-```{r, eval=TRUE, echo=TRUE}
+```{r, eval = TRUE, echo=TRUE}
 # look head of fetched metrics with the pander package
 pandoc.table(head(metrics, 2), style = "grid")
 ```
@@ -671,7 +671,7 @@ To build more complex expressions, use brackets `(`, `)`, and
 ```{r, eval = TRUE}
 entities <- get_entities(expression = "tags.app != '' and (tags.os != '' or tags.ip != '')")
 ```
-```{r, eval=TRUE, echo=TRUE}
+```{r, eval = TRUE, echo=TRUE}
 # look at head of fetched entities with the pander package
 pandoc.table(head(entities, 3), style = "grid")
 ```

@@ -14,8 +14,8 @@ test_that("get_metrics() works with http connection", {
 
 # test_that("get_metrics() works with https connection with certificate checking", {
 #   skip_on_cran()
-#   connection2 <- "/home/user001/4_connection.txt"
-#   capture.output(set_connection(file = connection4), file = 'NUL')
+#   connection9 <- "/home/user001/9_connection.txt"
+#   capture.output(set_connection(file = connection9), file = 'NUL')
 #   capture.output(m <- get_metrics(limit = 7, active="true"), file = 'NUL')
 #   #expect_equal_to_reference(m, "get_metrics1.rds")
 #   expect_equal(nrow(m), 7)
