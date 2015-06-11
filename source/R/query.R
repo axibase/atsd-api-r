@@ -175,7 +175,6 @@ query <- function(metric,
   request <- paste0(url, '/export?settings=', request)
   url_encoded <- paste0(url, '/export?settings=', url_encoded)
   
-  
   d <- RCurl::debugGatherer()
   
   https_options <- set_https_options()

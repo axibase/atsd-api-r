@@ -34,15 +34,17 @@ save_dfr <- function(dfr, time_col, metric_col, entity_col, entity, tags_col, ta
     }
     tags_list[[tag_name]] <- tag_val
   }
-  for (tag in tags) {
-    tag <- gsub("[[:space:]]", "", tag)
-    delim <- gregexpr(pattern = "=", tag)[[1]][1]
-    if (delim < 2) {
-      cat("\nIncorrect value of tags argument.")
-      cat("\nOne of tags has not form 'tag_name=tag_value'.")
-      stop("Wrong arguments.", call. = FALSE)
+  if (!is.na(tags)) {
+    for (tag in tags) {
+      tag <- gsub("[[:space:]]", "", tag)
+      delim <- gregexpr(pattern = "=", tag)[[1]][1]
+      if (delim < 2) {
+        cat("\nIncorrect value of tags argument.")
+        cat("\nOne of tags has not form 'tag_name=tag_value'.")
+        stop("Wrong arguments.", call. = FALSE)
+      }
+      tags_list[[substr(tag, 1, delim - 1)]] <- substr(tag, delim + 1, nchar(tag))
     }
-    tags_list[[substr(tag, 1, delim - 1)]] <- substr(tag, delim + 1, nchar(tag))
   }
   
   the_url <- get("url", envir = atsdEnv)
@@ -52,7 +54,11 @@ save_dfr <- function(dfr, time_col, metric_col, entity_col, entity, tags_col, ta
   # modify_url(url, scheme = NULL, hostname = NULL, port = NULL,
   #            path = NULL, query = NULL, params = NULL, fragment = NULL,
   #            username = NULL, password = NULL)
-  the_url <- httr::modify_url(the_url, path = path, query = tags_list)
+  if (length(tags_list) > 0) {
+    the_url <- httr::modify_url(the_url, path = path, query = tags_list)
+  } else {
+    the_url <- httr::modify_url(the_url, path = path)
+  }
   
   for (metric in metric_col) {
     df <- dfr[c(time_col, metric)]
