@@ -43,6 +43,8 @@
 #' \code{\link{to_zoo}} - convert a time-series data frame to 'zoo' object
 #'  for manipulating irregular time-series with built-in functions in zoo package.
 #' 
+#' \code{\link{update_entity}} -- update tags and enabled status of an entity.
+#' 
 #' Type 
 #' \strong{\code{browseVignettes(package = "atsd")}}
 #' to view the complete package documentation and usage examples.
