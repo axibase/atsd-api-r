@@ -79,13 +79,13 @@ update_entity <- function(entity,
     str <- paste0(substr(str, 1, nchar(str) - 2), '}')
   }
   str <- paste0(str, '}')
-
+  
   r <- httr::PATCH(url = the_url,
-              httr::authenticate(get("user", envir = atsdEnv), 
-                                 get("password", envir = atsdEnv)),
-              body = str,
-              httr::verbose(data_out = verbose, data_in = verbose, info = verbose, ssl = verbose)
-              )
+                   httr::authenticate(get("user", envir = atsdEnv), 
+                                      get("password", envir = atsdEnv)),
+                   body = str,
+                   httr::verbose(data_out = verbose, data_in = verbose, info = verbose, ssl = verbose)
+  )
   if (verbose) {
     if (r$status_code != 200) {
       message(content(r))
@@ -93,5 +93,5 @@ update_entity <- function(entity,
       message("Done.")
     }
   }
-    
+  
 }
