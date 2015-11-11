@@ -15,15 +15,15 @@
 #
 #############################################################################
 
-#' Update tags and enabled status of an entity.
+#' Create an entity with specified tags or replace the tags of an existing entity.
 #'
 #' @description
-#' Update specified tags and enabled status of an existing entity. Tags
-#' that are not specified are left unchenged.
-#'               
+#' This method creates a new entity and it's tags or replaces the tags of an existing entity.
+#' If only a subset of tags is provided for an existing entity, the remaining tags will be deleted.
+#' 
 #' @param entity
-#' Required argument, an entity name. The entity should exist into ATSD.
-#' In case you want to create new entity use the \code{\link{create_entity}} function.
+#' Required argument, the name of new entity. To modify some of tags of existing entity
+#' and do not change remaining tags use the \code{\link{update_entity}} function.
 #'  
 #' @param tag_names
 #' Optional argument, a character vector of names of tags.
@@ -35,22 +35,22 @@
 #' @param enabled
 #' Optional boolean argument.
 #' If \code{enabled = TRUE} the entity will be enabled,
-#' if \code{enabled = FALSE} the entity will be disabled,
-#' in the default case \code{enabled = NA} the enabled status of entity will not be changed.
+#' if \code{enabled = FALSE} the entity will be disabled.
+#' The default value is \code{enabled = TRUE}. 
 #' 
 #' @param verbose 
 #' Optional boolean argument, \code{FALSE} by default. 
 #' If \code{verbose = FALSE} then console output will be suppresed.
 #' 
 #' @return 
-#' code{TRUE} if update was successfull, \code{FALSE} --- otherwise.
+#' code{TRUE} if creation/replace was successfull, \code{FALSE} --- otherwise.
 #' 
 #' @export
 
-update_entity <- function(entity, 
+create_entity <- function(entity, 
                           tag_names = character(0), 
                           tag_values = character(0), 
-                          enabled = NA, 
+                          enabled = TRUE, 
                           verbose = FALSE) {
   
   if (length(tag_names) != length(tag_values) && verbose) {
@@ -65,11 +65,9 @@ update_entity <- function(entity,
   
   # build json string for request
   str <- "{"
-  if (!is.na(enabled)) {
-    str <- paste0(str, '"enabled": "', tolower(as.character(enabled)), '"')
-    if (length(tag_names) > 0) {
-      str <- paste0(str, ', ')
-    }
+  str <- paste0(str, '"enabled": "', tolower(as.character(enabled)), '"')
+  if (length(tag_names) > 0) {
+    str <- paste0(str, ', ')
   }
   if (length(tag_names) > 0) {
     str <- paste0(str, '"tags":{')
@@ -80,11 +78,11 @@ update_entity <- function(entity,
   }
   str <- paste0(str, '}')
   
-  r <- httr::PATCH(url = the_url,
-                   httr::authenticate(get("user", envir = atsdEnv), 
-                                      get("password", envir = atsdEnv)),
-                   body = str,
-                   httr::verbose(data_out = verbose, data_in = verbose, info = verbose, ssl = verbose)
+  r <- httr::PUT(url = the_url,
+                 httr::authenticate(get("user", envir = atsdEnv), 
+                                    get("password", envir = atsdEnv)),
+                 body = str,
+                 httr::verbose(data_out = verbose, data_in = verbose, info = verbose, ssl = verbose)
   )
   if (verbose) {
     if (r$status_code != 200) {
