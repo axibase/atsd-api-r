@@ -5,11 +5,11 @@
 \title{Create an entity with specified tags or replace the tags of an existing entity.}
 \usage{
 create_entity(entity, tag_names = character(0), tag_values = character(0),
-  enabled = NA, verbose = FALSE)
+  enabled = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{entity}{Required argument, the name of new entity. To modify tags of existing entity
-use the \code{\link{update_entity}} function.}
+\item{entity}{Required argument, the name of new entity. To modify some of tags of existing entity
+and do not change remaining tags use the \code{\link{update_entity}} function.}
 
 \item{tag_names}{Optional argument, a character vector of names of tags.}
 
@@ -18,17 +18,17 @@ This vector should has the same length as the \code{tag_names} vector.}
 
 \item{enabled}{Optional boolean argument.
 If \code{enabled = TRUE} the entity will be enabled,
-if \code{enabled = FALSE} the entity will be disabled,
-in the default case \code{enabled = NA} the enabled status of entity will not be changed.}
+if \code{enabled = FALSE} the entity will be disabled.
+The default value is \code{enabled = TRUE}.}
 
 \item{verbose}{Optional boolean argument, \code{FALSE} by default. 
 If \code{verbose = FALSE} then console output will be suppresed.}
 }
 \value{
-code{TRUE} if update was successfull, \code{FALSE} --- otherwise.
+code{TRUE} if creation/replace was successfull, \code{FALSE} --- otherwise.
 }
 \description{
 This method creates a new entity and it's tags or replaces the tags of an existing entity.
-If only a subset of fields is provided for an existing entity, the remaining tags will be deleted.
+If only a subset of tags is provided for an existing entity, the remaining tags will be deleted.
 }
 
