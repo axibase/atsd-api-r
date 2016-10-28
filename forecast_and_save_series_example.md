@@ -1,14 +1,16 @@
+### Forecast and Save Series Example
+
 -   Introduction
 -   Establish connection with ATSD
--   Fetch data and forecast from ATSD, then plot the retrieved data
+-   Fetch data and forecast from ATSD, and then plot the retrieved data
 -   Forecast with R
 -   Compare predictions and save series into ATSD
 
 ### Introduction
 
-In this demo we fetch time-series from ATSD. Then we forecast this time-series with help of functions from **stats** and **forecast** R packages. Then we compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally we save all forecasts in ATSD.
+In this demo we fetch time-series from ATSD. Then we forecast this time-series with the help of functions from the **stats** and **forecast** R packages. We then compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally, we save all forecasts in ATSD.
 
-### Establish connection with ATSD
+### Establish Connection with ATSD
 
 Start by attaching the required packages to R.
 
@@ -19,15 +21,15 @@ require("stats")
 require("forecast")
 ```
 
-We store the ATSD url, user name and password in a file. Then we can establish connection with ATSD server:
+We store the ATSD url, user name, and password in a file. Then we can establish a connection with the ATSD server:
 
 ``` r
 set_connection(file = "/home/user001/8_connection.txt")
 ```
 
-### Fetch data and forecast from ATSD, then plot the retrieved data
+### Fetch Data and Forecast from ATSD, then Plot the Retrieved Data
 
-Let's first fetch the aggregated time-series for the given metric, entity and tags from ATSD. We fetch data for the period of March 17 -- April 1.
+Let's first fetch the aggregated time-series for the given metric, entity, and tags from ATSD. Let us fetch data for the period of March 17 - April 1.
 
 ``` r
 dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
@@ -37,14 +39,14 @@ dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
 dup <- to_zoo(dup, value = "Avg")
 ```
 
-We will use the first 2 weeks, March 17 -- March 30, as practice set to build prediction models. And we will forecast the last two days March 31 and April 1.
+We will use the first 2 weeks, March 17 - March 30, as a practice set to build prediction models. We will forecast the last two days, March 31 and April 1.
 
 ``` r
 training_set <- window(dup, end = as.POSIXct("2015-03-30 23:50:00", origin="1970-01-01", tz="GMT"))
 data_set <- window(dup, start = as.POSIXct("2015-03-31 00:00:00", origin="1970-01-01", tz="GMT"))
 ```
 
-First of all we retrieve a 2 day forecast from ATSD. In this case ATSD uses Holt-Winters method to predict the behavior of the time-series.
+Firstly, we retrieve a 2 day forecast from ATSD. In this case ATSD, uses the Holt-Winters method to predict the behavior of the time-series.
 
 ``` r
 atsd_forecast <- query(metric = "disk_used_percent", entity = "nurswgvml006",
@@ -92,7 +94,7 @@ stl_model <- stl(training_ts, s.window = "periodic", robust = TRUE)
 hw_model <- HoltWinters(training_ts)
 ```
 
-We use helper function to compute forecasts based on the built models, and convert results to zoo objects with the correct timestamps.
+We use **helper** function to compute forecasts based on the built models, and convert results to zoo objects with the correct timestamps.
 
 ``` r
 # Helper function, compute forecast from model
@@ -114,7 +116,7 @@ stl_forecast <- get_forecast(stl_model, method="naive")
 hw_forecast <- get_forecast(hw_model)
 ```
 
-And combine all forecasts and data on the same graph.
+We can combine all forecasts and data on the same graph.
 
 ``` r
 plot(dup, xlim = c(start(dup), end(dup)), ylim = c(54, 61), col = "grey", xlab = '', ylab = '')
@@ -131,7 +133,7 @@ legend("topleft",
 
 ![](forecast_and_save_series_example_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
-To view more details we plot a graph for the last 2 days.
+To view more details, we can plot a graph for the last 2 days.
 
 ``` r
 plot(data_set, xlim = c(start(atsd_forecast), end(atsd_forecast)), ylim = c(54, 61), 
@@ -148,9 +150,9 @@ legend("topleft",
 
 ![](forecast_and_save_series_example_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
-### Compare predictions and save series into ATSD
+### Compare Predictions and Save Series into ATSD
 
-We can calculate difference between the forecasts and real data. Distances between two time-series can be calculated with functions implemented in the **TSdist** and **TSclust** R packages. We use the Euclidean distance as measure of dissimilarity.
+We can calculate the difference between the forecasts and real data. Distances between two time-series can be calculated with functions implemented in the **TSdist** and **TSclust** R packages. We use the Euclidean distance as measure of dissimilarity.
 
 ``` r
 require("TSclust")
@@ -171,7 +173,7 @@ diss.EUCL(coredata(data_set), coredata(hw_forecast))
 #> y 2.54965
 ```
 
-You can see that Holt Winters method of the **stats** package gives a slightly better result than the Holt Winters method implemented in ATSD.
+You can see that the Holt Winters method of the **stats** package gives a slightly better result than the Holt Winters method implemented in ATSD.
 
 We can save the forecasts in ATSD.
 
@@ -195,5 +197,3 @@ Now forecasts are saved in ATSD and we can view them through the ATSD Export pag
 
 View the above example in Chart Lab: 
 [http://axibase.com/chartlab/01c588eb](http://axibase.com/chartlab/01c588eb)
-
-
