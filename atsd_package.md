@@ -15,28 +15,28 @@
 1. <a name = "overview"></a> Package Overview
 ---------------------------------------------
 
-The package allows you query time-series data and statistics from [Axibase Time-Series Database](http://axibase.com/axibase-time-series-database/) (ATSD) and save time-series data in ATSD. List of package functions:
+The package allows you query time-series data and statistics from the [Axibase Time-Series Database](http://axibase.com/axibase-time-series-database/) (ATSD) and save time-series data in ATSD. Below is a list of package functions:
 
--   [set\_connection()](#set_connection), [save\_connection()](#save_connection), [show\_connection()](#show_connection) -- are used to manage the connection with ATSD. Set up and store the url, user name, and password. Configure cryptographic protocol and enforce SSL certificate validation in the case of https connection.
--   [query()](#query) -- get historical data and forecasts from ATSD.
--   [get\_metrics()](#get_metrics) -- get information about the metrics collected by ATSD.
--   [get\_entities()](#get_entities) -- get information about the entities collected by ATSD.
--   [get\_series\_tags()](#get_series_tags) -- get unique series tags for the metric.
--   [save\_series()](#save_series) -- save time series into ATSD.
--   [to\_zoo()](#to_zoo) -- converts a time-series data frame to 'zoo' object for manipulating irregular time-series with built-in functions in zoo package.
+-   [set\_connection()](#set_connection), [save\_connection()](#save_connection), [show\_connection()](#show_connection) - used to manage the connection with ATSD. Set up and store the url, user name, and password. Configure cryptographic protocol and enforce SSL certificate validation in the case of https connection.
+-   [query()](#query) - get historical data and forecasts from ATSD.
+-   [get\_metrics()](#get_metrics) - get metadata about the metrics collected by ATSD.
+-   [get\_entities()](#get_entities) - get metadata about the entities collected by ATSD.
+-   [get\_series\_tags()](#get_series_tags) - get unique series tags for the metric.
+-   [save\_series()](#save_series) - save time series into ATSD.
+-   [to\_zoo()](#to_zoo) - converts a time-series data frame to a 'zoo' object for manipulating irregular time-series with built-in functions in zoo package.
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
 2. <a name = "connecting"></a> Connecting to ATSD
 -------------------------------------------------
 
-Execute `library(atsd)`  to start working with the atsd package. The connection parameters are loaded from the package configuration file, <tt><font color = "SaddleBrown">atsd/connection.config</font></tt>,  which is located in the atsd package folder. The command
+Execute `library(atsd)` to start working with the atsd package. The connection parameters are loaded from the package configuration file, <tt><font color = "SaddleBrown">atsd/connection.config</font></tt>, which is located in the atsd package folder.
 
 ``` r
 installed.packages()["atsd", "LibPath"]
 ```
 
-shows you where the atsd package folder is. Open a text editor and modify the configuration file. It should look as follows:
+The command shows you where the atsd package folder is. Open a text editor and modify the configuration file. It should look as follows:
 
      # the url of ATSD including port number
      url=http://host_name:port_number   
@@ -64,53 +64,53 @@ show_connection()
 
 Refer to Chapter 9 for more options on managing ATSD connection parameters.
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
 3. <a name = "querying"></a>Querying ATSD
 -----------------------------------------
 
-<a name = "query"></a> **Function name:** query()
+<a name = "query"></a> **Function name:** `query()`
 
 **Description:** The function retrieves historical time-series data or forecasts from ATSD.
 
-**Returns object:** data frame
+**Returns object:** data frame 
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">metric</font></tt>  (required, string)
-    The name of the metric you want to get data for, for example, "disk\_used\_percent".
-    To obtain a list of metrics collected by ATSD use the [get\_metrics()](#get_metrics) function.
+-   <tt><font color = "SaddleBrown">metric</font></tt> (required, string):
+    name of the metric you want to get data for. For example, `disk_used_percent`.
+    To obtain a list of metrics collected by ATSD, use the `get_metrics()` function, which can be found [here](#get_metrics).
 
--   <tt><font color = "SaddleBrown">selection\_interval</font></tt>  (required, string)
-     This is the time interval for which the data will be selected. Specify it as "n-unit", where
-     unit is a Second, Minute, Hour, Day, Week, Month, Quarter, or Year and n is the number of units, for example, "3-Week" or "12-Hour".
+-   <tt><font color = "SaddleBrown">selection_interval</font></tt> (required, string):
+     time interval for which the data will be selected. Specify it as "n-unit", where
+     "unit" is a Second, Minute, Hour, Day, Week, Month, Quarter, or Year, and "n" is the number of units. For example, "3-Week" or "12-Hour".
 
--   <tt><font color = "SaddleBrown"> entity </font></tt>  (optional, string)
-    The name of the entity you want to get data for. If not provided, then data for all entities will be fetched for the specified metric. Obtain the list of entities with the [get\_entities()](#get_entities) function.
+-   <tt><font color = "SaddleBrown">entity</font></tt> (optional, string):
+    name of the entity you want to get data for. If not provided, then data for all entities will be fetched for the specified metric. Obtain the list of entities with the `get_entities()`, which can be found [here](#get_entities).
 
--   <tt><font color = "SaddleBrown"> entity\_group </font></tt>  (optional, string)
-    The name of entity group, for example, "HP Servers". Extracts data for all entities belonging to this group.
+-   <tt><font color = "SaddleBrown">entity_group</font></tt> (optional, string):
+    name of entity group. For example, "HP Servers". Extracts data for all entities belonging to this group.
 
--   <tt><font color = "SaddleBrown"> tags </font></tt>  (optional, string vector)
-    List of user-defined series tags to filter the fetched time-series data, for example, <tt>c("disk\_name=sda1", "mount\_point=/") </font></tt>.
+-   <tt><font color = "SaddleBrown">tags</font></tt> (optional, string vector):
+    list of user-defined series tags to filter the fetched time-series data. For example, <tt>c("disk_name=sda1", "mount_point=/")</font></tt>.
 
--   <tt><font color = "SaddleBrown"> end\_time </font></tt>  (optional, string)
-    The end time of the selection interval, for example, `end_time = "date('2014-12-27')"`. If not provided, the current time will be used. Specify the date and time, or use one of the supported expressions: [end time syntax](http://axibase.com/products/axibase-time-series-database/visualization/end-time/). For example, 'current\_day' would set the end of selection interval to 00:00:00 of the current day.
+-   <tt><font color = "SaddleBrown">end_time</font></tt> (optional, string):
+    end time of the selection interval. For example, `end_time = "date('2014-12-27')"`. If not provided, the current time will be used. Specify the date and time, or use one of the supported [end time syntax](http://axibase.com/products/axibase-time-series-database/visualization/end-time/) expressions. For example, `current_day` would set the end of selection interval to 00:00:00 of the current day.
 
--   <tt><font color = "SaddleBrown">aggregate\_interval</font></tt>  (optional, string)
-    The length of the aggregation interval. The period of produced time-series will be equal to the <tt><font color = "SaddleBrown">aggregate\_interval</font></tt>.  The value for each period is computed by the <tt><font color = "SaddleBrown">aggregate\_statistics</font></tt>  function applied to all samples of the original time-series within the period. The format of the <tt><font color = "SaddleBrown">aggregate\_interval</font></tt>  is the same as for the <tt><font color = "SaddleBrown">selection\_interval</font></tt>  argument, for example, "1-Minute".
+-   <tt><font color = "SaddleBrown">aggregate_interval</font></tt> (optional, string):
+    length of the aggregation interval. The period of produced time-series will be equal to <tt><font color = "SaddleBrown">aggregate_interval</font></tt>.  The value for each period is computed by the <tt><font color = "SaddleBrown">aggregate_statistics</font></tt>  function applied to all samples of the original time-series within the period. The format of <tt><font color = "SaddleBrown">aggregate_interval</font></tt>  is the same as for the <tt><font color = "SaddleBrown">selection_interval</font></tt>  argument (for example, "1-Minute").
 
--   <tt><font color = "SaddleBrown"> aggregate\_statistics </font></tt>  (optional, string vector)
-    The statistic functions used for aggregation. Multiple values are supported, for example, c("Min", "Avg", "StDev"). The default value is "Avg".
+-   <tt><font color = "SaddleBrown">aggregate_statistics</font></tt> (optional, string vector):
+    statistic functions used for aggregation. Multiple values are supported. For example, `c("Min", "Avg", "StDev")`. The default value is "Avg".
 
--   <tt><font color = "SaddleBrown"> interpolation </font></tt>  (optional, string)
-    If aggregation is enabled, then the values for the periods without data will be computed by one of the following interpolation functions: "None", "Linear", "Step". The default value is "None".
+-   <tt><font color = "SaddleBrown">interpolation</font></tt> (optional, string):
+    if aggregation is enabled, then the values for the periods without data will be computed by one of the following interpolation functions: "None", "Linear", "Step". The default value is "None".
 
--   <tt><font color = "SaddleBrown">export\_type</font></tt>  (optional, string)
-     Supported options: "History" or "Forecast". The default value is "History".
+-   <tt><font color = "SaddleBrown">export_type</font></tt> (optional, string):
+     supported options: "History" or "Forecast". The default value is "History".
 
--   <tt><font color = "SaddleBrown"> verbose </font></tt>  (optional, string)
-    If <tt>verbose = FALSE</tt>,  then all console output will be suppressed. By default, <tt>verbose = TRUE</tt>.
+-   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
+    if <tt>verbose = FALSE</tt>,  then all console output will be suppressed. By default, <tt>verbose = TRUE</tt>.
 
 **Examples:**
 
@@ -149,27 +149,27 @@ query(metric = "disk_used_percent", entity_group = "Linux", tags = c("mount_poin
       aggregate_statistics = c("Avg", "Min", "Max"), interpolation = "Linear", export_type = "Forecast")
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
-4. <a name = "zoo"></a>Transforming Data Frame to a zoo Object
+4. <a name = "zoo"></a>Transforming Data Frame to a `zoo` Object
 --------------------------------------------------------------
 
-<a name = "to_zoo"></a> **Function name:** to\_zoo()
+<a name = "to_zoo"></a> **Function name:** `to_zoo()`
 
-**Description:** The function builds a zoo object from the given data frame. The <tt><font color = "SaddleBrown">timestamp</font></tt>  argument provides a column of the data frame which is used as the index for the zoo object. The <tt><font color = "SaddleBrown">value</font></tt>  argument indicates the series which will be saved in a zoo object. If several columns are listed in the <tt><font color = "SaddleBrown">value</font></tt>  argument, they will all be saved in a multivariate zoo object. Information from other columns is ignored. To use this function the 'zoo' package should be installed.
+**Description:** the function builds a zoo object from the given data frame. The <tt><font color = "SaddleBrown">timestamp</font></tt>  argument provides a column of the data frame which is used as the index for the zoo object. The <tt><font color = "SaddleBrown">value</font></tt>  argument indicates the series which will be saved in a zoo object. If several columns are listed in the <tt><font color = "SaddleBrown">value</font></tt>  argument, they will all be saved in a multivariate zoo object. Information from other columns is ignored. To use this function the 'zoo' package should be installed.
 
 **Returns object:** [zoo](http://cran.r-project.org/web/packages/zoo/index.html) object
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">dfr</font></tt>  (required, data frame)
-     The data frame.
+-   <tt><font color = "SaddleBrown">dfr</font></tt> (required, data frame):
+     the data frame.
 
--   <tt><font color = "SaddleBrown">timestamp</font></tt>  (optional, character or numeric)
-     Name or number of the column with timestamps. By default, `timestamp = "Timestamp"`.
+-   <tt><font color = "SaddleBrown">timestamp</font></tt> (optional, character or numeric vector):
+     name or number of the column with timestamps. By default, `timestamp = "Timestamp"`.
 
--   <tt><font color = "SaddleBrown">value</font></tt>  (optional, character vector or numeric vector)
-     Names or numbers of columns with series values. By default, `value = "Value"`.
+-   <tt><font color = "SaddleBrown">value</font></tt> (optional, character or numeric vector):
+     names or numbers of columns with series values. By default, `value = "Value"`.
 
 **Examples:**
 
@@ -186,12 +186,12 @@ head(z, 3)
 #>               15.79                9.00               10.10
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
 5. <a name = "metrics"></a>Getting Metrics
 ------------------------------------------
 
-<a name = "get_metrics"></a> **Function name:** get\_metrics()
+<a name = "get_metrics"></a> **Function name:** `get_metrics()`
 
 **Description:** This function fetches a list of metrics and their tags from ATSD, and converts it to a data frame.
 
@@ -199,34 +199,34 @@ head(z, 3)
 
 Each row of the data frame corresponds to a metric and its tags:
 
--   <tt><font color = "DarkGreen"> name </font></tt> 
-     Metric name (unique)
+-   <tt><font color = "DarkGreen">name</font></tt>:
+     metric name (unique)
 
--   <tt><font color = "DarkGreen"> counter </font></tt> 
-     Counters are metrics with continuously incrementing value
+-   <tt><font color = "DarkGreen">counter</font></tt>:
+     counters are metrics with continuously incrementing values.
 
--   <tt><font color = "DarkGreen"> lastInsertTime </font></tt> 
-     Last time value was received by ATSD for this metric
+-   <tt><font color = "DarkGreen">lastInsertTime</font></tt>:
+     last time the value was received by ATSD for this metric.
 
--   <tt><font color = "DarkGreen"> tags </font></tt> 
-     User-defined tags (as requested by the "tags" argument)
+-   <tt><font color = "DarkGreen">tags</font></tt>:
+     user-defined tags (as requested by the `tags` argument).
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">expression</font></tt>  (optional, string)
-    Select metrics matching particular name pattern and/or user-defined metric tags. For examples refer to "Expression syntax" chapter.
+-   <tt><font color = "SaddleBrown">expression</font></tt> (optional, string):
+    select metrics matching particular name pattern and/or user-defined metric tags. For examples, refer to [Expression syntax](https://github.com/axibase/atsd-api-r/blob/master/atsd_package.md#expression) chapter.
 
--   <tt><font color = "SaddleBrown"> active</font></tt>  (optional, one of strings: "true" or "false")
-    Filter metrics by <tt>lastInsertTime</tt>  attribute. If <tt>active = "true"</tt>,  only metrics with positive <tt>lastInsertTime</tt>  are included in the response.
+-   <tt><font color = "SaddleBrown">active</font></tt> (optional, one of strings: "true" or "false"):
+    filter metrics by the <tt>lastInsertTime</tt>  attribute. If <tt>active = "true"</tt>,  only metrics with positive <tt>lastInsertTime</tt>  are included in the response.
 
--   <tt><font color = "SaddleBrown">tags</font></tt>  (optional, string vector)
-    User-defined metric tags to be included in the response. By default, all the tags will be included.
+-   <tt><font color = "SaddleBrown">tags</font></tt> (optional, string vector):
+    user-defined metric tags to be included in the response. By default, all the tags will be included.
 
--   <tt><font color = "SaddleBrown">limit</font></tt>  (optional, integer)
-    If limit \> 0, the response shows the top-N metrics ordered by name.
+-   <tt><font color = "SaddleBrown">limit</font></tt> (optional, integer):
+    if limit > 0, the response shows the top-N metrics ordered by name.
 
--   <tt><font color = "SaddleBrown">verbose</font></tt>  (optional, string)
-    If <tt>verbose = FALSE</tt>,  then all console output will be suppressed.
+-   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
+    if <tt>verbose = FALSE</tt>, then all console output will be suppressed.
 
 **Examples:**
 
@@ -262,12 +262,12 @@ tail(metrics$name)
 #> [5] "cpu_nice"                  "cpu_steal"
 ```
 
-[Return to Contents](#contents)
+[Return to to Table of Contents](#contents).
 
 6. <a name = "entities"></a>Getting Entities
 --------------------------------------------
 
-<a name = "get_entities"></a> **Function name:** get\_entities()
+<a name = "get_entities"></a> **Function name:** `get_entities()`
 
 **Description:** This function fetches a list of entities and their tags from ATSD, and converts it to a data frame.
 
@@ -275,34 +275,34 @@ tail(metrics$name)
 
 Each row of the data frame corresponds to an entity and its tags:
 
--   <tt><font color = "DarkGreen"> name </font></tt> 
-     Entity name (unique)
+-   <tt><font color = "DarkGreen">name</font></tt>:
+     entity name (unique).
 
--   <tt><font color = "DarkGreen"> enabled </font></tt> 
-     Enabled status, incoming data is discarded for disabled entities
+-   <tt><font color = "DarkGreen">enabled</font></tt>:
+     enabled status, incoming data is discarded for disabled entities.
 
--   <tt><font color = "DarkGreen"> lastInsertTime </font></tt> 
-     Last time value was received by ATSD for this entity
+-   <tt><font color = "DarkGreen">lastInsertTime</font></tt>:
+     last time a value was received by ATSD for this entity.
 
--   <tt><font color = "DarkGreen"> tags </font></tt> 
-     User-defined tags (as requested by the "tags" argument)
+-   <tt><font color = "DarkGreen">tags</font></tt>:
+     user-defined tags (as requested by the "tags" argument).
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">expression</font></tt>  (optional, string)
-    Select entities matching particular name pattern and/or user-defined entity tags. For examples refer to "Expression syntax" chapter.
+-   <tt><font color = "SaddleBrown">expression</font></tt> (optional, string):
+    select entities matching particular name pattern and/or user-defined entity tags. For examples refer to [Expression syntax](https://github.com/axibase/atsd-api-r/blob/master/atsd_package.md#expression) chapter.
 
--   <tt><font color = "SaddleBrown"> active</font></tt>  (optional, one of strings: "true" or "false")
-    Filter entities by <tt>lastInsertTime</tt>  attribute. If <tt>active = "true"</tt>,  only entities with positive <tt>lastInsertTime</tt>  are included in the response.
+-   <tt><font color = "SaddleBrown"> active</font></tt> (optional, one of strings: "true" or "false"):
+    filter entities by the <tt>lastInsertTime</tt> attribute. If <tt>active = "true"</tt>,  only entities with positive <tt>lastInsertTime</tt>  are included in the response.
 
--   <tt><font color = "SaddleBrown">tags</font></tt>  (optional, string vector)
-    User-defined entity tags to be included in the response. By default, all the tags will be included.
+-   <tt><font color = "SaddleBrown">tags</font></tt> (optional, string vector):
+    user-defined entity tags to be included in the response. By default, all the tags will be included.
 
--   <tt><font color = "SaddleBrown">limit</font></tt>  (optional, integer)
-    If limit \> 0, the response shows the top-N entities ordered by name.
+-   <tt><font color = "SaddleBrown">limit</font></tt> (optional, integer):
+    if limit > 0, the response shows the top-N entities ordered by name.
 
--   <tt><font color = "SaddleBrown">verbose</font></tt>  (optional, string)
-    If <tt>verbose = FALSE</tt>,  then all console output will be suppressed.
+-   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
+    if <tt>verbose = FALSE</tt>, then all of the console outputs will be suppressed.
 
 **Examples:**
 
@@ -332,39 +332,39 @@ entities$name
 #> [5] "nurswgvml206" "nurswgvml207" "nurswgvml208"
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
 7. <a name = "gtst"></a> Getting Time Series Tags
 -------------------------------------------------
 
-<a name = "get_series_tags"></a> **Function name:** get\_series\_tags()
+<a name = "get_series_tags"></a> **Function name:** `get_series_tags()`
 
-**Description:** The function determines time series collected by ATSD for a given metric. For each time series it lists tags associated with the series, and last time the series was updated. The list of fetched time series is based on data stored on disk for the last 24 hours.
+**Description:** The function determines the time series collected by ATSD for a given metric. For each time series, `get_series_tags()` lists tags associated with the series, and the last time the series was updated. The list of fetched time series is based on data stored on disk for the last 24 hours.
 
 **Returns object:** data frame
 
 Each row of the data frame corresponds to a time series and its tags:
 
--   <tt><font color = "DarkGreen"> entity </font></tt> 
-     Name of entity which generate the time series.
+-   <tt><font color = "DarkGreen">entity</font></tt>:
+     name of the entity which generate the time series.
 
--   <tt><font color = "DarkGreen"> lastInsertTime </font></tt> 
-     Last time value was received by ATSD for this time series.
+-   <tt><font color = "DarkGreen">lastInsertTime</font></tt>:
+     last time a value was received by ATSD for this time series.
 
--   <tt><font color = "DarkGreen"> tags </font></tt> 
-     Tags of the series.
+-   <tt><font color = "DarkGreen">tags</font></tt>:
+     tags of the series.
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">metric</font></tt>  (required, string)
-    The name of the metric you want to get time series for, for example, "disk\_used\_percent".
-    To obtain a list of metrics collected by ATSD use the [get\_metrics()](#get_metrics) function.
+-   <tt><font color = "SaddleBrown">metric</font></tt> (required, string):
+    the name of the metric you want to get a time series for. For example, `disk_used_percent`.
+    To obtain a list of metrics collected by ATSD, use the `get_metrics()` function, which can be found [here](#get_metrics).
 
--   <tt><font color = "SaddleBrown"> entity </font></tt>  (optional, string)
-    The name of the entity you want to get time series for. If not provided, then data for all entities will be fetched for the specified metric. Obtain the list of entities with the [get\_entities()](#get_entities) function.
+-   <tt><font color = "SaddleBrown">entity</font></tt> (optional, string):
+    the name of the entity you want to get time series for. If not provided, then data for all entities will be fetched for the specified metric. Obtain the list of entities with the `get_entities()` function, which can be found [here](#get_entities).
 
--   <tt><font color = "SaddleBrown">verbose</font></tt>  (optional, string)
-    If <tt>verbose = FALSE</tt>,  then all console output will be suppressed.
+-   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
+    if <tt>verbose = FALSE</tt>,  then all of the console outputs will be suppressed.
 
 **Examples:**
 
@@ -394,75 +394,75 @@ pandoc.table(head(tags, 3), style = "grid")
 get_series_tags(metric = "disk_used_percent", entity = "nurswgvml007")
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
-8. <a name = "saving_ts"></a> Saving Time-series in ATSD
+8. <a name = "saving_ts"></a> Saving Time-Series in ATSD
 --------------------------------------------------------
 
-<a name = "save_series"></a> **Function name:** save\_series()
+<a name = "save_series"></a> **Function name:** `save_series()`
 
-**Description:** Save time-series from the data frame into ATSD. The data frame should have a column with timestamps and at least one numeric column with values of a metric.
+**Description:** save time-series from the data frame into ATSD. The data frame should have a column with timestamps and at least one numeric column with values of a metric.
 
 **Returns object:** NULL
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown">dfr</font></tt>  (required, data frame)
-     The data frame should have a column with timestamps and at least one numeric column with values of a metric.
+-   <tt><font color = "SaddleBrown">dfr</font></tt> (required, data frame):
+     the data frame should have a column with timestamps and at least one numeric column with values of a metric.
 
--   <tt><font color = "SaddleBrown">time\_col</font></tt>  (optional, numeric or character)
-     Number or name of the column with the timestamps. Default value is 1. For example, <tt><font color = "SaddleBrown">time\_col = 1</font></tt>,  or <tt><font color = "SaddleBrown">time\_col = "Timestamp"</font></tt>.  Read "Timestamps format" section below for supported timestamp classes and formats.
+-   <tt><font color = "SaddleBrown">time_col</font></tt> (optional, numeric or character):
+     number or name of the column with the timestamps. Default value is 1. For example, <tt><font color = "SaddleBrown">time_col = 1</font></tt>,  or <tt><font color = "SaddleBrown">time_col = "Timestamp"</font></tt>.  Read the "Timestamps format" section directly below for supported timestamp classes and formats.
 
--   <tt><font color = "SaddleBrown"> time\_format</font></tt>  (optional, string)
-     Optional string argument, indicates format of timestamps. This argument is used in the case when timestamp format is not clear from their class. The value of this argument can be one of the following: `"ms"` (for epoch milliseconds), `"sec"` (for epoch seconds), or a format string, for example `"\%Y-\%m-\%d \%H:\%M:\%S"`. This format string will be used to convert the provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Read "Timestamp format" section for details.
+-   <tt><font color = "SaddleBrown">time_format</font></tt> (optional, string):
+     optional string argument, indicates format of timestamps. This argument is used in the case when the timestamp format is not clear from their class. The value of this argument can be one of the following: `"ms"` (for epoch milliseconds), `"sec"` (for epoch seconds), or a format string, for example `"\%Y-\%m-\%d \%H:\%M:\%S"`. This format string will be used to convert the provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Read "Timestamp format" section for more details.
 
--   <tt><font color = "SaddleBrown"> tz</font></tt>  (optional, string)
-     By default, `tz = "GMT"`. Specify time zone, when timestamps are strings formatted as described in the <tt><font color = "SaddleBrown">time\_format</font></tt>  argument. For example, `tz = "Australia/Darwin"`. View the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for a list of possible values.
+-   <tt><font color = "SaddleBrown">tz</font></tt> (optional, string):
+     by default, `tz = "GMT"`. Specify the time zone when timestamps are strings formatted as described in the <tt><font color = "SaddleBrown">time_format</font></tt> argument. For example, `tz = "Australia/Darwin"`. View the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for a list of possible values.
 
--   <tt><font color = "SaddleBrown"> metric\_col</font></tt>  (required, numeric or character vector)
-     Specifies numbers or names of the columns where metric values are stored. For example, `metric_col = c(2, 3, 4)`, or `metric_col = c("Value", "Avg")`. If <tt><font color = "SaddleBrown">metric\_name</font></tt>  argument is not given, then names of columns, in lower case, are used as metric names when saving them in ATSD.
+-   <tt><font color = "SaddleBrown">metric_col</font></tt> (required, numeric or character vector):
+     specifies numbers or names of the columns where metric values are stored. For example, `metric_col = c(2, 3, 4)`, or `metric_col = c("Value", "Avg")`. If the <tt><font color = "SaddleBrown">metric_name</font></tt>  argument is not given, then names of columns, in lower case, are used as metric names when saving them in ATSD.
 
--   <tt><font color = "SaddleBrown">metric\_name</font></tt>  (optional, character vector)
-     Specifies metric names. The series indicated by <tt><font color = "SaddleBrown">metric\_col</font></tt>  argument are saved in ATSD along with metric names, provided by the <tt><font color = "SaddleBrown">metric\_name</font></tt> . So the number and order of names in the <tt><font color = "SaddleBrown">metric\_name</font></tt>  should match to columns in \<tt\><font color = "SaddleBrown">metric\_col</font></tt> . If <tt><font color = "SaddleBrown">metric\_name</font></tt>  argument is not provided, then names of columns, in lower case, are used as metric names when saving them in ATSD.
+-   <tt><font color = "SaddleBrown">metric_name</font></tt> (optional, character vector):
+     specifies metric names. The series indicated by the <tt><font color = "SaddleBrown">metric_col</font></tt>  argument are saved in ATSD along with the metric names, provided by the <tt><font color = "SaddleBrown">metric_name</font></tt>. The number and order of names in the <tt><font color = "SaddleBrown">metric_name</font></tt>  should match to columns in <tt><font color = "SaddleBrown">metric_col</font></tt>. If the <tt><font color = "SaddleBrown">metric_name</font></tt>  argument is not provided, then names of the columns, in lower case, are used as metric names when saving them in ATSD.
 
--   <tt><font color = "SaddleBrown"> entity\_col</font></tt>  (optional, numeric or character)
-     Optional argument, should be provided if the entity argument is not given. Number or name of a column with entities. Several entities in the column are allowed. For example, `entity_col = 4`, or `entity_col = "server001"`.
+-   <tt><font color = "SaddleBrown">entity_col</font></tt> (optional, numeric or character):
+     optional argument, should be provided if the entity argument is not given. Number or name of a column with entities. Several entities in the column are allowed. For example, `entity_col = 4` or `entity_col = "server001"`.
 
--   <tt><font color = "SaddleBrown"> entity</font></tt>  (optional, character)
-     Should be provided if the <tt><font color = "SaddleBrown">entity\_col</font></tt>  argument is not given. Name of the entity.
+-   <tt><font color = "SaddleBrown">entity</font></tt> (optional, character):
+     should be provided if the <tt><font color = "SaddleBrown">entity_col</font></tt>  argument is not given. Name of the entity.
 
--   <tt><font color = "SaddleBrown"> tags\_col</font></tt>  (optional, numeric or character vector)
-     Lists numbers or names of the columns containing tag values. So the name of a column is a tag name, and values in the column are the tag values.
+-   <tt><font color = "SaddleBrown">tags_col</font></tt> (optional, numeric or character vector):
+     lists numbers or names of the columns containing tag values. So the name of a column is a tag name, and values in the column are the tag values.
 
--   <tt><font color = "SaddleBrown"> tags</font></tt>  (optional, character vector)
-     Lists tags and their values in "tag=value" format. Each indicated tag will be saved with each series. Whitespace symbols are ignored.
+-   <tt><font color = "SaddleBrown">tags</font></tt> (optional, character vector):
+     lists tags and their values in "tag=value" format. Each indicated tag will be saved with each series. Whitespace symbols are ignored.
 
--   <tt><font color = "SaddleBrown">verbose</font></tt>  (optional, string)
-    If <tt>verbose = FALSE</tt>,  then all console outputs will be suppressed.
+-   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
+    if <tt>verbose = FALSE</tt>, then all console outputs will be suppressed.
 
 **Timestamp format.**
 
-The list of allowed timestamp types.
+Below is the list of allowed timestamp types:
 
--   Numeric, in epoch milliseconds or epoch seconds. In that case `time_format = "ms"` or `time_format = "sec"` should be used, and time zone argument <tt><font color = "SaddleBrown">tz</font></tt>  is ignored.
+-   Numeric, in epoch milliseconds or epoch seconds. In this case `time_format = "ms"` or `time_format = "sec"` should be used, and the time zone argument <tt><font color = "SaddleBrown">tz</font></tt>  is ignored.
 
--   Object of one of type `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package or `timeDate` from the `timeDate` package. In that case arguments <tt><font color = "SaddleBrown">time\_format</font></tt>  and <tt><font color = "SaddleBrown">tz</font></tt>  are ignored.
+-   Object of one of the following types: `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package or `timeDate` from the `timeDate` package. In this case, the arguments <tt><font color = "SaddleBrown">time_format</font></tt>  and <tt><font color = "SaddleBrown">tz</font></tt>  are ignored.
 
--   String, for example, "2015-01-03 10:07:15". In this case <tt><font color = "SaddleBrown">time\_format</font></tt>  argument should specify which format string is used for the timestamps. For example, `time_format = "\%Y-\%m-\%d \%H:\%M:\%S"`. Type `?strptime` to see list of format symbols. This format string will be used to convert provided timestamps to epoch milliseconds before storing the timestamps in ATSD. So time zone, as written in <tt><font color = "SaddleBrown">tz</font></tt>  argument, and standard origin "1970-01-01 00:00:00" are used for conversion. In fact conversion is done with use of command: `as.POSIXct(time_stamp, format = time_format, origin="1970-01-01", tz = tz)`.
+-   String. For example, `"2015-01-03 10:07:15"`. In this case, the <tt><font color = "SaddleBrown">time_format</font></tt>  argument should specify which format string is used for the timestamps. For example, `time_format = "\%Y-\%m-\%d \%H:\%M:\%S"`. Enter `?strptime` to see a list of format symbols. This format string will be used to convert provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Time zone, as written in the <tt><font color = "SaddleBrown">tz</font></tt> argument, and standard origin `"1970-01-01 00:00:00"` are used for the conversion. In fact, the conversion is done with use of the command: `as.POSIXct(time_stamp, format = time_format, origin="1970-01-01", tz = tz)`.
 
-Note that timestamps will be stored in epoch milliseconds. So if you put some data into ATSD and then retrieve it back, the timestamps will refer to the same time but in GMT time zone. For example, if you save time stamp `"2015-02-15 10:00:00"` with `tz = "Australia/Darwin"` in ATSD, and then retrieve it back, you will get the timestamp `"2015-02-15 00:30:00"` because Australia/Darwin time zone has a +09:30 shift relative to the GMT zone.
+Note that timestamps will be stored in epoch milliseconds. If you enter data into ATSD and then retrieve it back, the timestamps will refer to the same time but in GMT time zone. For example, if you save the timestamp `"2015-02-15 10:00:00"` with `tz = "Australia/Darwin"` in ATSD, and then retrieve it back, you will get the timestamp `"2015-02-15 00:30:00"` because Australia/Darwin time zone has a +09:30 shift relative to the GMT zone.
 
 **Entity specification**
 
-You can provide entity name in one of <tt><font color = "SaddleBrown">entity</font></tt>  or <tt><font color = "SaddleBrown">entity\_col</font></tt>  arguments. In the first case all series will have the same entity. In the second case, entities specified in <tt><font color = "SaddleBrown">entity\_col</font></tt>  column will be saved along with corresponding series.
+You can provide an entity name in one of the <tt><font color = "SaddleBrown">entity</font></tt>  or <tt><font color = "SaddleBrown">entity_col</font></tt>  arguments. In the first case, all series will have the same entity. In the second case, entities specified in the <tt><font color = "SaddleBrown">entity_col</font></tt>  column will be saved along with their corresponding series.
 
 **Tags specification**
 
-The <tt><font color = "SaddleBrown">tags\_col</font></tt>  argument indicates which columns of the data frame keeps the time-series tags. The name of each column specified by the <tt><font color = "SaddleBrown">tags\_col</font></tt>  argument is a tag name, and the values in the column are tag values.
+The <tt><font color = "SaddleBrown">tags_col</font></tt>  argument indicates which columns of the data frame keeps the time-series tags. The name of each column specified by the <tt><font color = "SaddleBrown">tags_col</font></tt>  argument is a tag name, and the values in the column are tag values.
 
-Before storing the series in ATSD, the data frame will be split into several data frames, each of them has a unique entity and unique list of tag values. This entity and tags are stored in ATSD along with the time-series from the data frame. NA's and missing values in time-series will be ignored.
+Before storing the series in ATSD, the data frame will be split into several data frames, each of them having a unique entity and unique list of tag values. This entity and tags are stored in ATSD along with the time-series from the data frame. NA's and missing values in the time-series will be ignored.
 
-In <tt><font color = "SaddleBrown">tags</font></tt>  argument you can specify tags which are the same for all rows (records) of the data frame. So each series value saved in ATSD will have tags, provided in the <tt><font color = "SaddleBrown">tags</font></tt>  argument.
+In the <tt><font color = "SaddleBrown">tags</font></tt> argument you can specify tags, which are the same for all rows (records) of the data frame. Each series value saved in ATSD will have tags provided in the <tt><font color = "SaddleBrown">tags</font></tt>  argument.
 
 **Examples:**
 
@@ -475,12 +475,12 @@ save_series(dfr, time_col = 2, time_format = "%Y/%m/%d %H:%M:%S", tz = "Australi
             metric_col = c(3, 4, 5), entity_col = 1, tags_col = c(6, 7), tags = "os_type = linux")
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents)
 
 9. <a name = "expression"></a> Expression Syntax
 ------------------------------------------------
 
-In this section, we explain the syntax of the <tt><font color = "SaddleBrown">expression</font></tt>  argument of the functions `get_metrics()`   and `get_entities()`. The <tt><font color = "SaddleBrown">expression</font></tt>  is used to filter result for which <tt><font color = "SaddleBrown">expression</font></tt>  evaluates to `TRUE` .
+In this section, we explain the syntax of the <tt><font color = "SaddleBrown">expression</font></tt>  argument of the functions `get_metrics()` and `get_entities()`. The <tt><font color = "SaddleBrown">expression</font></tt>  is used to filter results, for which <tt><font color = "SaddleBrown">expression</font></tt>  evaluates to `TRUE` .
 
 The variable `name` is used to select metrics/entities by names:
 
@@ -500,7 +500,7 @@ pandoc.table(metrics, style = "grid")
 #> +----------+-----------+---------------------+---------------+--------------+
 ```
 
-Metrics and entities have user-defined tags. Each of these tags is a pair ("tag\_name" : "tag\_value"). The variable `tags.tag_name`  in an expression refers to the `tag_value` for given metric/entity. If a metric/entity does not have this tag, the `tag_value` will be an empty string.
+Metrics and entities have user-defined tags. Each of these tags is a pair ("tag_name" : "tag_value"). The variable `tags.tag_name` in an expression refers to the `tag_value` for the given metric/entity. If a metric/entity does not have this tag, the `tag_value` will be an empty string.
 
 ``` r
 # get metrics without 'source' tag, and include all tags of fetched metrics in output
@@ -576,13 +576,13 @@ pandoc.table(head(entities, 3), style = "grid")
 #> +-----------+-----------------+-----------------+
 ```
 
-To test if a string is in a collections, use `in`  operator:
+To test if a string is in a collections, use the `in` operator:
 
 ``` r
 get_entities(expression = "name in ('derby-test', 'atom.axibase.com')")
 ```
 
-Use `like`  operator to match values with expressions containing wildcards: `expression = "name like 'disk*'"` . The wildcard `*`  mean zero or more characters. The wildcard `.`  means any one character.
+Use the `like` operator to match values with expressions containing wildcards: `expression = "name like 'disk*'"`. The wildcard `*` mean zero or more characters. The wildcard `.` means any one character.
 
 ``` r
 metrics <- get_metrics(expression = "name like '*cpu*' and tags.table = 'System'")
@@ -601,17 +601,17 @@ print(metrics$name)
 
 There are additional functions you can use in an expression:
 
--   `list(string, delimeter))`  Splits the string by delimeter. The default delimiter is a comma.
+-   `list(string, delimeter))`: splits the string by delimeter. The default delimiter is a comma.
 
--   `upper(string)`  Converts the string argument to upper case.
+-   `upper(string)`: converts the string argument to upper case.
 
--   `lower(string)`  Converts the string argument to lower case.
+-   `lower(string)`: converts the string argument to lower case.
 
--   `collection(name)`  Refers to a named collection of strings created in ATSD.
+-   `collection(name)`: refers to a named collection of strings created in ATSD.
 
--   `likeAll(string, collection of patterns)`  Returns true if every element in the collection of patterns matches the given string.
+-   `likeAll(string, collection of patterns)`: returns true if every element in the collection of patterns matches the given string.
 
--   `likeAny(string, collection of patterns)`  Returns true if at least one element in the collection of patterns matches the given string.
+-   `likeAny(string, collection of patterns)`: returns true if at least one element in the collection of patterns matches the given string.
 
 ``` r
 get_metrics(expression = "likeAll(lower(name), list('cpu*,*use*'))")
@@ -619,32 +619,32 @@ get_metrics(expression = "likeAny(lower(name), list('cpu*,*use*'))")
 get_metrics(expression = "name in collection('fs_ignore')")
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
 
 10. <a name = "advanced"></a> Advanced Connection Options
 ---------------------------------------------------------
 
 The atsd package uses connection parameters to connect with ATSD. These parameters are:
 
--   <tt><font color = "SaddleBrown">url</font></tt>  - the url of ATSD including port number
+-   <tt><font color = "SaddleBrown">url</font></tt>  - the url of ATSD including port number.
 
--   <tt><font color = "SaddleBrown">user</font></tt>  - the user name
+-   <tt><font color = "SaddleBrown">user</font></tt>  - the user name.
 
--   <tt><font color = "SaddleBrown">password</font></tt>  - the user's password
+-   <tt><font color = "SaddleBrown">password</font></tt>  - the user's password.
 
--   <tt><font color = "SaddleBrown">verify</font></tt>  - should ATSD SSL certificate be validated
+-   <tt><font color = "SaddleBrown">verify</font></tt>  - should ATSD SSL certificate need be validated.
 
--   <tt><font color = "SaddleBrown">encryption</font></tt>  - cryptographic protocol used by ATSD https server
+-   <tt><font color = "SaddleBrown">encryption</font></tt>  - cryptographic protocol used by the ATSD https server.
 
-The configuration parameters are loaded from the package configuration file when you load the atsd package into R. (See Section 2.)
+The configuration parameters are loaded from the package configuration file when you load the atsd package into R (See Section 2).
 
-The functions `show_connection()`,  `set_connection()`,  and `save_connection()`,  show configuration parameters, change them, and store them in the configuration file.
+The functions `show_connection()`,  `set_connection()`,  and `save_connection()` show configuration parameters, change them, and store them in the configuration file.
 
-<br> <a name = "show_connection"></a> **Function name:** show\_connection()
+<a name = "show_connection"></a> **Function name:** `show_connection()`
 
 **Returns object:** NULL
 
-**Description:** The function prints current values of the connection parameters. (They may be different from the values in the configuration file.)
+**Description:** the function prints current values of the connection parameters. They may be different from the values in the configuration file.
 
 **Arguments:** no
 
@@ -659,31 +659,31 @@ show_connection()
 #> encryption = ssl3
 ```
 
-<br> <a name = "set_connection"></a> **Function name:** set\_connection()
+<br> <a name = "set_connection"></a> **Function name:** `set_connection()`
 
 **Returns object:** NULL
 
-**Description:** The function overrides the connection parameters for the duration of the current R session without changing the configuration file. If called without arguments the function sets the connection parameters from the configuration file. If the <tt><font color = "SaddleBrown">file</font></tt>  argument is provided the function use it. In both cases the current values of the parameters became the same as in the file. In case the <tt><font color = "SaddleBrown">file</font></tt>  argument is not provided, but some of other arguments are specified, the only specified parameters will be changed.
+**Description:** The function overrides the connection parameters for the duration of the current R session without changing the configuration file. If called without arguments, the function sets the connection parameters from the configuration file. If the <tt><font color = "SaddleBrown">file</font></tt>  argument is provided, the function will use it. In both cases the current values of the parameters became the same as in the file. In case the <tt><font color = "SaddleBrown">file</font></tt>  argument is not provided, but some of other arguments are specified, only the specified parameters will be changed.
 
 **Arguments:**
 
--   <tt><font color = "SaddleBrown"> url </font></tt>  (optional, string)
-     The url of ATSD including port number.
+-   <tt><font color = "SaddleBrown">url</font></tt> (optional, string):
+     the url of ATSD including port number.
 
--   <tt><font color = "SaddleBrown"> user </font></tt>  (optional, string)
-     The user name.
+-   <tt><font color = "SaddleBrown">user</font></tt> (optional, string):
+     the user name.
 
--   <tt><font color = "SaddleBrown"> password </font></tt>  (optional, string)
-     The user's password.
+-   <tt><font color = "SaddleBrown">password</font></tt> (optional, string):
+     the user's password.
 
--   <tt><font color = "SaddleBrown"> verify </font></tt>  (optional, string)
-     String - "yes" or "no", `verify = "yes"`  ensures validation of ATSD SSL certificate and `verify = "no"`  suppresses the validation (applicable in the case of 'https' protocol).
+-   <tt><font color = "SaddleBrown">verify</font></tt> (optional, string):
+     string - "yes" or "no". `verify = "yes"`  ensures validation of the ATSD SSL certificate and `verify = "no"`  suppresses the validation (applicable in the case of 'https' protocol).
 
--   <tt><font color = "SaddleBrown"> encryption </font></tt>  (optional, string)
-     Cryptographic protocol used by ATSD https server. Possible values are: "default", "ssl2", "ssl3", and "tls1" (In most cases, use "ssl3" or "tls1".)
+-   <tt><font color = "SaddleBrown">encryption</font></tt> (optional, string):
+     cryptographic protocol used by the ATSD https server. Possible values are: "default", "ssl2", "ssl3", and "tls1" (in most cases, use "ssl3" or "tls1".)
 
--   <tt><font color = "SaddleBrown"> file</font></tt>  (optional, string)
-     The absolute path to the file from which the connection parameters could be read. The file should be formatted as the package configuration file, see Section 2.
+-   <tt><font color = "SaddleBrown">file</font></tt> (optional, string):
+     the absolute path to the file from which the connection parameters could be read. The file should be formatted as the package configuration file (see Section 2 for more information).
 
 **Examples:**
 
@@ -728,26 +728,26 @@ show_connection()
 set_connection(file = "/home/user001/atsd_https_connection.txt")
 ```
 
-<br> <a name = "save_connection"></a> **Function name:** save\_connection()
+<br> <a name = "save_connection"></a> **Function name:** `save_connection()`
 
 **Returns object:** NULL
 
-**Description:** The function writes the connection parameters into the configuration file. If called without arguments the functions use current values of the connection parameters (including NAs). Otherwise only the provided arguments will be written to the configuration file. If configuration file is absent it will be created in the atsd package folder. **Arguments:**
+**Description:** The function writes the connection parameters into the configuration file. If called without arguments, the functions will use the current values of the connection parameters (including NAs). Otherwise, only the provided arguments will be written to the configuration file. If the configuration file is absent, it will be created in the atsd package folder. **Arguments:**
 
--   <tt><font color = "SaddleBrown"> url </font></tt>  (optional, string)
-     The url of ATSD including port number.
+-   <tt><font color = "SaddleBrown">url</font></tt> (optional, string):
+     the url of ATSD including port number.
 
--   <tt><font color = "SaddleBrown"> user </font></tt>  (optional, string)
-     The user name.
+-   <tt><font color = "SaddleBrown">user</font></tt> (optional, string):
+     the user name.
 
--   <tt><font color = "SaddleBrown"> password </font></tt>  (optional, string)
-     The user's password.
+-   <tt><font color = "SaddleBrown">password</font></tt> (optional, string):
+     the user's password.
 
--   <tt><font color = "SaddleBrown"> verify </font></tt>  (optional, string)
-     String - "yes" or "no", `verify = "yes"`  ensures validation of ATSD SSL certificate and `verify = "no"`  suppresses the validation (applicable in the case of 'https' protocol).
+-   <tt><font color = "SaddleBrown">verify</font></tt> (optional, string):
+     string - "yes" or "no". `verify = "yes"` ensures validation of ATSD SSL certificate and `verify = "no"`  suppresses the validation (applicable in the case of 'https' protocol).
 
--   <tt><font color = "SaddleBrown"> encryption </font></tt>  (optional, string)
-     Cryptographic protocol used by ATSD https server. Possible values are: "default", "ssl2", "ssl3", and "tls1" (In most cases, use "ssl3" or "tls1".)
+-   <tt><font color = "SaddleBrown">encryption</font></tt> (optional, string):
+     cryptographic protocol used by the ATSD https server. Possible values are: "default", "ssl2", "ssl3", and "tls1" (in most cases, use "ssl3" or "tls1".)
 
 **Examples:**
 
@@ -763,4 +763,4 @@ save_connection(url = "https://my.company.com:8443", user = "user001", password 
                verify = "no", encryption = "ssl3")
 ```
 
-[Return to Contents](#contents)
+[Return to Table of Contents](#contents).
