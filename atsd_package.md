@@ -19,8 +19,8 @@ The package allows you query time-series data and statistics from the [Axibase T
 
 -   [set\_connection()](#set_connection), [save\_connection()](#save_connection), [show\_connection()](#show_connection) - used to manage the connection with ATSD. Set up and store the url, user name, and password. Configure cryptographic protocol and enforce SSL certificate validation in the case of https connection.
 -   [query()](#query) - get historical data and forecasts from ATSD.
--   [get\_metrics()](#get_metrics) - get information for metrics collected by ATSD.
--   [get\_entities()](#get_entities) - get information for entities collected by ATSD.
+-   [get\_metrics()](#get_metrics) - get metadata about the metrics collected by ATSD.
+-   [get\_entities()](#get_entities) - get metadata about the entities collected by ATSD.
 -   [get\_series\_tags()](#get_series_tags) - get unique series tags for the metric.
 -   [save\_series()](#save_series) - save time series into ATSD.
 -   [to\_zoo()](#to_zoo) - converts a time-series data frame to a 'zoo' object for manipulating irregular time-series with built-in functions in zoo package.
