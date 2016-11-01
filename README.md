@@ -26,8 +26,8 @@ meta-data such as entities, metrics, and tags from ATSD:
   Set up and store the url, user name, and password. Configure cryptographic protocol 
   and enforce SSL certificate validation in the case of https connection.
 - [query()](#query) - get historical data and forecasts from ATSD.
-- [get_metrics()](#get_metrics) - get information for metrics collected by ATSD.
-- [get_entities()](#get_entities) - get information for entities collected by ATSD.
+- [get_metrics()](#get_metrics) - get metadata about the metrics collected by ATSD.
+- [get_entities()](#get_entities) - get metadata about the entities collected by ATSD.
 - [get_series_tags()](#get_series_tags) - get unique time series tags for the metric.
 - [to_zoo()](#to_zoo) - converts a time-series data frame to a `zoo` object for manipulating irregular time-series with built-in functions in the zoo package.
 

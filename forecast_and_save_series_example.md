@@ -4,7 +4,7 @@
 -   Establish connection with ATSD
 -   Fetch data and forecast from ATSD, and then plot the retrieved data
 -   Forecast with R
--   Compare predictions and save series into ATSD
+-   Compare forecasts and save series into ATSD
 
 ### Introduction
 
@@ -39,14 +39,14 @@ dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
 dup <- to_zoo(dup, value = "Avg")
 ```
 
-We will use the first 2 weeks, March 17 - March 30, as a practice set to build prediction models. We will forecast the last two days, March 31 and April 1.
+We will use the first 2 weeks, March 17 - March 30, as a practice set to build forecast models. We will forecast the last two days, March 31 and April 1.
 
 ``` r
 training_set <- window(dup, end = as.POSIXct("2015-03-30 23:50:00", origin="1970-01-01", tz="GMT"))
 data_set <- window(dup, start = as.POSIXct("2015-03-31 00:00:00", origin="1970-01-01", tz="GMT"))
 ```
 
-Firstly, we retrieve a 2 day forecast from ATSD. In this case ATSD, uses the Holt-Winters method to predict the behavior of the time-series.
+Firstly, we retrieve a 2 day forecast from ATSD. In this case ATSD, uses the Holt-Winters method to forecast the behavior of the time-series.
 
 ``` r
 atsd_forecast <- query(metric = "disk_used_percent", entity = "nurswgvml006",
@@ -60,7 +60,7 @@ atsd_forecast <- to_zoo(atsd_forecast, value = "Avg")
 We can view ATSD's forecast for the last two days and real data on the same graph.
 
 ``` r
-# save timestamps for prediction period
+# save timestamps for forecast period
 time_stamps <- as.POSIXct(time(atsd_forecast), origin="1970-01-01", tz="GMT")
 # graph time-series
 plot(dup, xlim = c(start(dup), end(atsd_forecast)), ylim = c(54, 61), col = "grey", xlab = '', ylab = '')
@@ -80,7 +80,7 @@ We can build several models of the data with help of functions from the **stats*
 # fit best ARIMA model with auto.arima function from "forecast" package
 arima_model <- auto.arima(training_set)
 
-# to use other prediction models we need to convert zoo object to ts object
+# to use other forecast models we need to convert zoo object to ts object
 # 'frequency' parameter is number of measurements per day
 training_ts <- ts(coredata(training_set), frequency = 6 * 24)
 
@@ -150,7 +150,7 @@ legend("topleft",
 
 ![](forecast_and_save_series_example_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
-### Compare Predictions and Save Series into ATSD
+### Compare Forecasts and Save Series into ATSD
 
 We can calculate the difference between the forecasts and real data. Distances between two time-series can be calculated with functions implemented in the **TSdist** and **TSclust** R packages. We use the Euclidean distance as measure of dissimilarity.
 

@@ -81,32 +81,32 @@ Refer to Chapter 9 for more options on managing ATSD connection parameters.
     name of the metric you want to get data for. For example, `disk_used_percent`.
     To obtain a list of metrics collected by ATSD, use the `get_metrics()` function, which can be found [here](#get_metrics).
 
--   <tt><font color = "SaddleBrown">selection\_interval</font></tt> (required, string):
+-   <tt><font color = "SaddleBrown">selection_interval</font></tt> (required, string):
      time interval for which the data will be selected. Specify it as "n-unit", where
      "unit" is a Second, Minute, Hour, Day, Week, Month, Quarter, or Year, and "n" is the number of units. For example, "3-Week" or "12-Hour".
 
 -   <tt><font color = "SaddleBrown">entity</font></tt> (optional, string):
     name of the entity you want to get data for. If not provided, then data for all entities will be fetched for the specified metric. Obtain the list of entities with the `get_entities()`, which can be found [here](#get_entities).
 
--   <tt><font color = "SaddleBrown">entity\_group</font></tt> (optional, string):
+-   <tt><font color = "SaddleBrown">entity_group</font></tt> (optional, string):
     name of entity group. For example, "HP Servers". Extracts data for all entities belonging to this group.
 
 -   <tt><font color = "SaddleBrown">tags</font></tt> (optional, string vector):
-    list of user-defined series tags to filter the fetched time-series data. For example, <tt>c("disk\_name=sda1", "mount\_point=/")</font></tt>.
+    list of user-defined series tags to filter the fetched time-series data. For example, <tt>c("disk_name=sda1", "mount_point=/")</font></tt>.
 
--   <tt><font color = "SaddleBrown">end\_time</font></tt> (optional, string):
+-   <tt><font color = "SaddleBrown">end_time</font></tt> (optional, string):
     end time of the selection interval. For example, `end_time = "date('2014-12-27')"`. If not provided, the current time will be used. Specify the date and time, or use one of the supported [end time syntax](http://axibase.com/products/axibase-time-series-database/visualization/end-time/) expressions. For example, `current_day` would set the end of selection interval to 00:00:00 of the current day.
 
--   <tt><font color = "SaddleBrown">aggregate\_interval</font></tt> (optional, string):
-    length of the aggregation interval. The period of produced time-series will be equal to <tt><font color = "SaddleBrown">aggregate\_interval</font></tt>.  The value for each period is computed by the <tt><font color = "SaddleBrown">aggregate\_statistics</font></tt>  function applied to all samples of the original time-series within the period. The format of <tt><font color = "SaddleBrown">aggregate\_interval</font></tt>  is the same as for the <tt><font color = "SaddleBrown">selection\_interval</font></tt>  argument (for example, "1-Minute").
+-   <tt><font color = "SaddleBrown">aggregate_interval</font></tt> (optional, string):
+    length of the aggregation interval. The period of produced time-series will be equal to <tt><font color = "SaddleBrown">aggregate_interval</font></tt>.  The value for each period is computed by the <tt><font color = "SaddleBrown">aggregate_statistics</font></tt>  function applied to all samples of the original time-series within the period. The format of <tt><font color = "SaddleBrown">aggregate_interval</font></tt>  is the same as for the <tt><font color = "SaddleBrown">selection_interval</font></tt>  argument (for example, "1-Minute").
 
--   <tt><font color = "SaddleBrown">aggregate\_statistics</font></tt> (optional, string vector):
+-   <tt><font color = "SaddleBrown">aggregate_statistics</font></tt> (optional, string vector):
     statistic functions used for aggregation. Multiple values are supported. For example, `c("Min", "Avg", "StDev")`. The default value is "Avg".
 
 -   <tt><font color = "SaddleBrown">interpolation</font></tt> (optional, string):
     if aggregation is enabled, then the values for the periods without data will be computed by one of the following interpolation functions: "None", "Linear", "Step". The default value is "None".
 
--   <tt><font color = "SaddleBrown">export\_type</font></tt> (optional, string):
+-   <tt><font color = "SaddleBrown">export_type</font></tt> (optional, string):
      supported options: "History" or "Forecast". The default value is "History".
 
 -   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
@@ -223,7 +223,7 @@ Each row of the data frame corresponds to a metric and its tags:
     user-defined metric tags to be included in the response. By default, all the tags will be included.
 
 -   <tt><font color = "SaddleBrown">limit</font></tt> (optional, integer):
-    if limit \> 0, the response shows the top-N metrics ordered by name.
+    if limit > 0, the response shows the top-N metrics ordered by name.
 
 -   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
     if <tt>verbose = FALSE</tt>, then all console output will be suppressed.
@@ -299,7 +299,7 @@ Each row of the data frame corresponds to an entity and its tags:
     user-defined entity tags to be included in the response. By default, all the tags will be included.
 
 -   <tt><font color = "SaddleBrown">limit</font></tt> (optional, integer):
-    if limit \> 0, the response shows the top-N entities ordered by name.
+    if limit > 0, the response shows the top-N entities ordered by name.
 
 -   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
     if <tt>verbose = FALSE</tt>, then all of the console outputs will be suppressed.
@@ -410,28 +410,28 @@ get_series_tags(metric = "disk_used_percent", entity = "nurswgvml007")
 -   <tt><font color = "SaddleBrown">dfr</font></tt> (required, data frame):
      the data frame should have a column with timestamps and at least one numeric column with values of a metric.
 
--   <tt><font color = "SaddleBrown">time\_col</font></tt> (optional, numeric or character):
-     number or name of the column with the timestamps. Default value is 1. For example, <tt><font color = "SaddleBrown">time\_col = 1</font></tt>,  or <tt><font color = "SaddleBrown">time\_col = "Timestamp"</font></tt>.  Read the "Timestamps format" section directly below for supported timestamp classes and formats.
+-   <tt><font color = "SaddleBrown">time_col</font></tt> (optional, numeric or character):
+     number or name of the column with the timestamps. Default value is 1. For example, <tt><font color = "SaddleBrown">time_col = 1</font></tt>,  or <tt><font color = "SaddleBrown">time_col = "Timestamp"</font></tt>.  Read the "Timestamps format" section directly below for supported timestamp classes and formats.
 
--   <tt><font color = "SaddleBrown">time\_format</font></tt> (optional, string):
+-   <tt><font color = "SaddleBrown">time_format</font></tt> (optional, string):
      optional string argument, indicates format of timestamps. This argument is used in the case when the timestamp format is not clear from their class. The value of this argument can be one of the following: `"ms"` (for epoch milliseconds), `"sec"` (for epoch seconds), or a format string, for example `"\%Y-\%m-\%d \%H:\%M:\%S"`. This format string will be used to convert the provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Read "Timestamp format" section for more details.
 
 -   <tt><font color = "SaddleBrown">tz</font></tt> (optional, string):
-     by default, `tz = "GMT"`. Specify the time zone when timestamps are strings formatted as described in the <tt><font color = "SaddleBrown">time\_format</font></tt> argument. For example, `tz = "Australia/Darwin"`. View the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for a list of possible values.
+     by default, `tz = "GMT"`. Specify the time zone when timestamps are strings formatted as described in the <tt><font color = "SaddleBrown">time_format</font></tt> argument. For example, `tz = "Australia/Darwin"`. View the "TZ" column of [the time zones table](http://en.wikipedia.org/wiki/Zone.tab) for a list of possible values.
 
--   <tt><font color = "SaddleBrown">metric\_col</font></tt> (required, numeric or character vector):
-     specifies numbers or names of the columns where metric values are stored. For example, `metric_col = c(2, 3, 4)`, or `metric_col = c("Value", "Avg")`. If the <tt><font color = "SaddleBrown">metric\_name</font></tt>  argument is not given, then names of columns, in lower case, are used as metric names when saving them in ATSD.
+-   <tt><font color = "SaddleBrown">metric_col</font></tt> (required, numeric or character vector):
+     specifies numbers or names of the columns where metric values are stored. For example, `metric_col = c(2, 3, 4)`, or `metric_col = c("Value", "Avg")`. If the <tt><font color = "SaddleBrown">metric_name</font></tt>  argument is not given, then names of columns, in lower case, are used as metric names when saving them in ATSD.
 
--   <tt><font color = "SaddleBrown">metric\_name</font></tt> (optional, character vector):
-     specifies metric names. The series indicated by the <tt><font color = "SaddleBrown">metric\_col</font></tt>  argument are saved in ATSD along with the metric names, provided by the <tt><font color = "SaddleBrown">metric\_name</font></tt>. The number and order of names in the <tt><font color = "SaddleBrown">metric_name</font></tt>  should match to columns in <tt\><font color = "SaddleBrown">metric\_col</font></tt>. If the <tt><font color = "SaddleBrown">metric\_name</font></tt>  argument is not provided, then names of the columns, in lower case, are used as metric names when saving them in ATSD.
+-   <tt><font color = "SaddleBrown">metric_name</font></tt> (optional, character vector):
+     specifies metric names. The series indicated by the <tt><font color = "SaddleBrown">metric_col</font></tt>  argument are saved in ATSD along with the metric names, provided by the <tt><font color = "SaddleBrown">metric_name</font></tt>. The number and order of names in the <tt><font color = "SaddleBrown">metric_name</font></tt>  should match to columns in <tt><font color = "SaddleBrown">metric_col</font></tt>. If the <tt><font color = "SaddleBrown">metric_name</font></tt>  argument is not provided, then names of the columns, in lower case, are used as metric names when saving them in ATSD.
 
--   <tt><font color = "SaddleBrown">entity\_col</font></tt> (optional, numeric or character):
+-   <tt><font color = "SaddleBrown">entity_col</font></tt> (optional, numeric or character):
      optional argument, should be provided if the entity argument is not given. Number or name of a column with entities. Several entities in the column are allowed. For example, `entity_col = 4` or `entity_col = "server001"`.
 
 -   <tt><font color = "SaddleBrown">entity</font></tt> (optional, character):
-     should be provided if the <tt><font color = "SaddleBrown">entity\_col</font></tt>  argument is not given. Name of the entity.
+     should be provided if the <tt><font color = "SaddleBrown">entity_col</font></tt>  argument is not given. Name of the entity.
 
--   <tt><font color = "SaddleBrown">tags\_col</font></tt> (optional, numeric or character vector):
+-   <tt><font color = "SaddleBrown">tags_col</font></tt> (optional, numeric or character vector):
      lists numbers or names of the columns containing tag values. So the name of a column is a tag name, and values in the column are the tag values.
 
 -   <tt><font color = "SaddleBrown">tags</font></tt> (optional, character vector):
@@ -446,19 +446,19 @@ Below is the list of allowed timestamp types:
 
 -   Numeric, in epoch milliseconds or epoch seconds. In this case `time_format = "ms"` or `time_format = "sec"` should be used, and the time zone argument <tt><font color = "SaddleBrown">tz</font></tt>  is ignored.
 
--   Object of one of the following types: `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package or `timeDate` from the `timeDate` package. In this case, the arguments <tt><font color = "SaddleBrown">time\_format</font></tt>  and <tt><font color = "SaddleBrown">tz</font></tt>  are ignored.
+-   Object of one of the following types: `Date`, `POSIXct`, `POSIXlt`, `chron` from the `chron` package or `timeDate` from the `timeDate` package. In this case, the arguments <tt><font color = "SaddleBrown">time_format</font></tt>  and <tt><font color = "SaddleBrown">tz</font></tt>  are ignored.
 
--   String. For example, `"2015-01-03 10:07:15"`. In this case, the <tt><font color = "SaddleBrown">time\_format</font></tt>  argument should specify which format string is used for the timestamps. For example, `time_format = "\%Y-\%m-\%d \%H:\%M:\%S"`. Enter `?strptime` to see a list of format symbols. This format string will be used to convert provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Time zone, as written in the <tt><font color = "SaddleBrown">tz</font></tt> argument, and standard origin `"1970-01-01 00:00:00"` are used for the conversion. In fact, the conversion is done with use of the command: `as.POSIXct(time_stamp, format = time_format, origin="1970-01-01", tz = tz)`.
+-   String. For example, `"2015-01-03 10:07:15"`. In this case, the <tt><font color = "SaddleBrown">time_format</font></tt>  argument should specify which format string is used for the timestamps. For example, `time_format = "\%Y-\%m-\%d \%H:\%M:\%S"`. Enter `?strptime` to see a list of format symbols. This format string will be used to convert provided timestamps to epoch milliseconds before storing the timestamps in ATSD. Time zone, as written in the <tt><font color = "SaddleBrown">tz</font></tt> argument, and standard origin `"1970-01-01 00:00:00"` are used for the conversion. In fact, the conversion is done with use of the command: `as.POSIXct(time_stamp, format = time_format, origin="1970-01-01", tz = tz)`.
 
 Note that timestamps will be stored in epoch milliseconds. If you enter data into ATSD and then retrieve it back, the timestamps will refer to the same time but in GMT time zone. For example, if you save the timestamp `"2015-02-15 10:00:00"` with `tz = "Australia/Darwin"` in ATSD, and then retrieve it back, you will get the timestamp `"2015-02-15 00:30:00"` because Australia/Darwin time zone has a +09:30 shift relative to the GMT zone.
 
 **Entity specification**
 
-You can provide an entity name in one of the <tt><font color = "SaddleBrown">entity</font></tt>  or <tt><font color = "SaddleBrown">entity\_col</font></tt>  arguments. In the first case, all series will have the same entity. In the second case, entities specified in the <tt><font color = "SaddleBrown">entity\_col</font></tt>  column will be saved along with their corresponding series.
+You can provide an entity name in one of the <tt><font color = "SaddleBrown">entity</font></tt>  or <tt><font color = "SaddleBrown">entity_col</font></tt>  arguments. In the first case, all series will have the same entity. In the second case, entities specified in the <tt><font color = "SaddleBrown">entity_col</font></tt>  column will be saved along with their corresponding series.
 
 **Tags specification**
 
-The <tt><font color = "SaddleBrown">tags\_col</font></tt>  argument indicates which columns of the data frame keeps the time-series tags. The name of each column specified by the <tt><font color = "SaddleBrown">tags\_col</font></tt>  argument is a tag name, and the values in the column are tag values.
+The <tt><font color = "SaddleBrown">tags_col</font></tt>  argument indicates which columns of the data frame keeps the time-series tags. The name of each column specified by the <tt><font color = "SaddleBrown">tags_col</font></tt>  argument is a tag name, and the values in the column are tag values.
 
 Before storing the series in ATSD, the data frame will be split into several data frames, each of them having a unique entity and unique list of tag values. This entity and tags are stored in ATSD along with the time-series from the data frame. NA's and missing values in the time-series will be ignored.
 
@@ -500,7 +500,7 @@ pandoc.table(metrics, style = "grid")
 #> +----------+-----------+---------------------+---------------+--------------+
 ```
 
-Metrics and entities have user-defined tags. Each of these tags is a pair ("tag\_name" : "tag\_value"). The variable `tags.tag_name` in an expression refers to the `tag_value` for the given metric/entity. If a metric/entity does not have this tag, the `tag_value` will be an empty string.
+Metrics and entities have user-defined tags. Each of these tags is a pair ("tag_name" : "tag_value"). The variable `tags.tag_name` in an expression refers to the `tag_value` for the given metric/entity. If a metric/entity does not have this tag, the `tag_value` will be an empty string.
 
 ``` r
 # get metrics without 'source' tag, and include all tags of fetched metrics in output
