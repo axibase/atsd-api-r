@@ -440,7 +440,7 @@ get_series_tags(metric = "disk_used_percent", entity = "nurswgvml007")
 -   <tt><font color = "SaddleBrown">verbose</font></tt> (optional, string):
     if <tt>verbose = FALSE</tt>, then all console outputs will be suppressed.
 
-**Timestamp format.**
+**Timestamp format**
 
 Below is the list of allowed timestamp types:
 
