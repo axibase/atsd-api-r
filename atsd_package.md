@@ -15,7 +15,7 @@
 1. <a name = "overview"></a> Package Overview
 ---------------------------------------------
 
-The package allows you query time-series data and statistics from the [Axibase Time-Series Database](http://axibase.com/axibase-time-series-database/) (ATSD) and save time-series data in ATSD. Below is a list of package functions:
+The package allows you query time-series data and statistics from the [Axibase Time Series Database](http://axibase.com/axibase-time-series-database/) (ATSD) and save time-series data in ATSD. Below is a list of package functions:
 
 -   [set\_connection()](#set_connection), [save\_connection()](#save_connection), [show\_connection()](#show_connection) - used to manage the connection with ATSD. Set up and store the url, user name, and password. Configure cryptographic protocol and enforce SSL certificate validation in the case of https connection.
 -   [query()](#query) - get historical data and forecasts from ATSD.
