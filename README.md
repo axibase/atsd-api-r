@@ -34,12 +34,12 @@ Manage ATSD connection. Set up and store ATSD URL, username, and password. Confi
 
 **ATSD R Package** provides functions for storing and retrieving time series and related meta data in ATSD:
 
-* [`to_zoo()`](atsd_package.md#to_zoo()) : Builds a [`zoo` object](http://cran.r-project.org/web/packages/zoo/index.html) from the given Data Frame.
-* [`query()`](atsd_package.md#query()): Retrieves historical time series data or forecasts from ATSD as a Data Frame object.
-* [`get_metrics()`](atsd_package.md#get_metrics()): Retrieves a list of metrics and associated tags from ATSD, and converts them to Data Frame object.
-* [`get_entities()`](atsd_package.md#get_entities()): Retrieves a list of entities and associated tags from ATSD, and converts them to a Data Frame object.
-* [`get_series_tags()`](atsd_package.md#get_series_tags()): Retrieves series tags for the defined metric and returns a Data Frame object. For each time series, the function enumerates tags and last update time associated with the series.
-* [`save_series()`](atsd_package.md#save_series()): Saves time series from a Data Frame into ATSD.
+* [`to_zoo()`](atsd_package.md#to_zoo) : Builds a [`zoo` object](http://cran.r-project.org/web/packages/zoo/index.html) from the given Data Frame.
+* [`query()`](atsd_package.md#query): Retrieves historical time series data or forecasts from ATSD as a Data Frame object.
+* [`get_metrics()`](atsd_package.md#get_metrics): Retrieves a list of metrics and associated tags from ATSD, and converts them to Data Frame object.
+* [`get_entities()`](atsd_package.md#get_entities): Retrieves a list of entities and associated tags from ATSD, and converts them to a Data Frame object.
+* [`get_series_tags()`](atsd_package.md#get_series_tags): Retrieves series tags for the defined metric and returns a Data Frame object. For each time series, the function enumerates tags and last update time associated with the series.
+* [`save_series()`](atsd_package.md#save_series): Saves time series from a Data Frame into ATSD.
 
 > For more information about package functions and their usage, refer to [Package Functions Documentation](atsd_package.md#functions).
 
