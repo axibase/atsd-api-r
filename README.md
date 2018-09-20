@@ -7,7 +7,7 @@
 * [Overview](#overview)
 * [Installation](#installation)
 * [Getting Started](#getting-started)
-* [Uninstall](#Uninstall)
+* [Uninstall](#uninstall)
 * [License](#license)
 * [Examples](#examples)
 
