@@ -1,37 +1,37 @@
-### Forecast and Save Series Example
+# Forecast and Save Series Example
 
--   Introduction
--   Establish connection with ATSD
--   Fetch data and forecast from ATSD, and then plot the retrieved data
--   Forecast with R
--   Compare forecasts and save series into ATSD
+* [Introduction](#Introduction)
+* [Establish Connection with ATSD](#establish-connection-with-atsd)
+* [Retrieve and Plot Data and Forecast from ATSD](#retrieve-and-plot-data-and-forecast-from-atsd)
+* [Forecast with R](#forecast-with-r)
+* [Compare Forecasts and Save Series into ATSD](#compare-forecast-and-save-series-into-atsd)
 
-### Introduction
+## Introduction
 
-In this demo we fetch time-series from ATSD. Then we forecast this time-series with the help of functions from the **stats** and **forecast** R packages. We then compare the generated forecasts with a forecast retrieved from ATSD and with real data for the same period. Finally, we save all forecasts in ATSD.
+This tutorial demonstrates the process of retrieving data from ATSD and forecasting the future with the help of the [`stats`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html) and [`forecast`](https://cran.r-project.org/web/packages/forecast/index.html) packages. The same samples are forecast with ATSD, and the results of the two forecasts compared to one another and actual data. Finally, both forecast series are stored in ATSD for future use.
 
-### Establish Connection with ATSD
+## Establish Connection with ATSD
 
-Start by attaching the required packages to R.
+Begin by attaching the required packages to R.
 
-``` r
+```r
 require("atsd")
 require("zoo")
 require("stats")
 require("forecast")
 ```
 
-We store the ATSD url, user name, and password in a file. Then we can establish a connection with the ATSD server:
+Store the ATSD URL, username, and password in a `.txt` file then establish a connection with the ATSD server:
 
-``` r
-set_connection(file = "/home/user001/8_connection.txt")
+```r
+set_connection(file = "/home/john_doe/8808_connection.txt")
 ```
 
-### Fetch Data and Forecast from ATSD, then Plot the Retrieved Data
+### Retrieve and Plot Data and Forecast from ATSD
 
-Let's first fetch the aggregated time-series for the given metric, entity, and tags from ATSD. Let us fetch data for the period of March 17 - April 1.
+Retrieve aggregated time series for a metric collected by an entity with certain tags stored in ATSD during the period from March 17 to 30, 2015.
 
-``` r
+```r
 dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
              tags = c("file_system=/dev/sdb1", "mount_point=/media/datadrive"),
              selection_interval = "16-Day", end_time = "date('2015-04-02')",
@@ -39,14 +39,14 @@ dup <- query(metric = "disk_used_percent", entity = "nurswgvml006",
 dup <- to_zoo(dup, value = "Avg")
 ```
 
-We will use the first 2 weeks, March 17 - March 30, as a practice set to build forecast models. We will forecast the last two days, March 31 and April 1.
+March 17 to 30, 2015 is used as training set data to build forecast models. Output forecast predicts series values for March 31 and April 1, 2015.
 
-``` r
+```r
 training_set <- window(dup, end = as.POSIXct("2015-03-30 23:50:00", origin="1970-01-01", tz="GMT"))
 data_set <- window(dup, start = as.POSIXct("2015-03-31 00:00:00", origin="1970-01-01", tz="GMT"))
 ```
 
-Firstly, we retrieve a 2 day forecast from ATSD. In this case ATSD, uses the Holt-Winters method to forecast the behavior of the time-series.
+Retrieve the two-day forecast from ATSD. Forecast is calculated with the [Holt-Winters](https://axibase.com/docs/atsd/forecasting/#algorithm-parameters) algorithm.
 
 ``` r
 atsd_forecast <- query(metric = "disk_used_percent", entity = "nurswgvml006",
@@ -60,11 +60,11 @@ atsd_forecast <- to_zoo(atsd_forecast, value = "Avg")
 We can view ATSD's forecast for the last two days and real data on the same graph.
 
 ``` r
-# save timestamps for forecast period
+# Save timestamps for forecast period
 time_stamps <- as.POSIXct(time(atsd_forecast), origin="1970-01-01", tz="GMT")
-# graph time-series
+# Graph time series
 plot(dup, xlim = c(start(dup), end(atsd_forecast)), ylim = c(54, 61), col = "grey", xlab = '', ylab = '')
-# add ATSD forecast to graph
+# Add ATSD forecast to graph
 lines(atsd_forecast, col = "red")
 legend("topleft", c("data", "ATSD forecast"), lty = 1, lwd = 1, col = c("grey", "red"))
 ```
@@ -73,14 +73,14 @@ legend("topleft", c("data", "ATSD forecast"), lty = 1, lwd = 1, col = c("grey", 
 
 ### Forecast with R
 
-We can build several models of the data with help of functions from the **stats** and **forecast** R packages.
+Build several models of the data with help of functions from the `stats` and `forecast` R packages.
 
-``` r
-# build ARIMA model with 'forecast' package
-# fit best ARIMA model with auto.arima function from "forecast" package
+```r
+# Build ARIMA model with 'forecast' package
+# Fit best ARIMA model with auto.arima function from "forecast" package
 arima_model <- auto.arima(training_set)
 
-# to use other forecast models we need to convert zoo object to ts object
+# To use other forecast models convert zoo object to ts object
 # 'frequency' parameter is number of measurements per day
 training_ts <- ts(coredata(training_set), frequency = 6 * 24)
 
@@ -90,13 +90,13 @@ nn_model <- nnetar(training_ts, lambda = 0)
 # STL model (Seasonal and Trend decomposition using Loess), the "stats" package
 stl_model <- stl(training_ts, s.window = "periodic", robust = TRUE)
 
-# build Holt-Winters model with "stats" package
+# Build Holt-Winters model with "stats" package
 hw_model <- HoltWinters(training_ts)
 ```
 
-We use **helper** function to compute forecasts based on the built models, and convert results to zoo objects with the correct timestamps.
+Use function `helper` to compute forecasts based on constructed models and convert results to `zoo` objects with correct timestamps.
 
-``` r
+```r
 # Helper function, compute forecast from model
 get_forecast <- function(model, ...) {
   # parameter h sets number of periods for forecasting
@@ -107,7 +107,7 @@ get_forecast <- function(model, ...) {
 }
 ```
 
-Now we apply the helper function to the models.
+Apply `helper` function to the constructed models.
 
 ``` r
 arima_forecast <- get_forecast(arima_model)
@@ -116,7 +116,7 @@ stl_forecast <- get_forecast(stl_model, method="naive")
 hw_forecast <- get_forecast(hw_model)
 ```
 
-We can combine all forecasts and data on the same graph.
+Combine all forecasts and data on the same graph.
 
 ``` r
 plot(dup, xlim = c(start(dup), end(dup)), ylim = c(54, 61), col = "grey", xlab = '', ylab = '')
@@ -133,9 +133,9 @@ legend("topleft",
 
 ![](forecast_and_save_series_example_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
-To view more details, we can plot a graph for the last 2 days.
+To view more details, can plot a graph for the final two days.
 
-``` r
+```r
 plot(data_set, xlim = c(start(atsd_forecast), end(atsd_forecast)), ylim = c(54, 61), 
      col = "grey", xlab = '', ylab = '', lwd = 2)
 lines(atsd_forecast, col = "red", lwd = 2)
@@ -152,9 +152,9 @@ legend("topleft",
 
 ### Compare Forecasts and Save Series into ATSD
 
-We can calculate the difference between the forecasts and real data. Distances between two time-series can be calculated with functions implemented in the **TSdist** and **TSclust** R packages. We use the Euclidean distance as measure of dissimilarity.
+Calculate the difference between forecast and actual data. The distances between two time series is calculated with functions implemented in the [`TSdist`](https://cran.r-project.org/web/packages/TSdist/index.html) and [`TSclust`](https://cran.r-project.org/web/packages/TSclust/index.html) R packages. Use Euclidean distance as a measure of dissimilarity.
 
-``` r
+```r
 require("TSclust")
 diss.EUCL(coredata(data_set), coredata(atsd_forecast))
 #>          x
@@ -173,11 +173,9 @@ diss.EUCL(coredata(data_set), coredata(hw_forecast))
 #> y 2.54965
 ```
 
-You can see that the Holt Winters method of the **stats** package gives a slightly better result than the Holt Winters method implemented in ATSD.
+Save the forecasts in ATSD.
 
-We can save the forecasts in ATSD.
-
-``` r
+```r
 r_forecasts <- list(arima = arima_forecast, neural_networks = nn_forecast, 
                     stl = stl_forecast, holt_winters = hw_forecast)
 for (fcst in names(r_forecasts)) {
@@ -189,11 +187,9 @@ for (fcst in names(r_forecasts)) {
 }
 ```
 
-Now forecasts are saved in ATSD and we can view them through the ATSD Export page, and view them in ATSD's charts.
+View saved forecasts on the **Data > Export** page, and visualize series in [ATSD Charts](https://github.com/axibase/charts).
 
-![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_export_tab.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts.png)
 ![](forecast_and_save_series_example_files/figure-markdown_github/atsd_saved_series_charts_zoomed_in.png)
 
-View the above example in Chart Lab: 
-[http://axibase.com/chartlab/01c588eb](http://axibase.com/chartlab/01c588eb)
+[![](./images/button.png)](http://axibase.com/chartlab/01c588eb)

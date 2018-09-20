@@ -1,83 +1,138 @@
-### R package: atsd
+# ATSD R Package
 
-This repository contains the **atsd R package**. This package provides functionality 
-to communicate with 
-the [Axibase Time Series Database](http://axibase.com/axibase-time-series-database/) (ATSD).
-ATSD is a non-relational clustered database used for storing performance measurements 
-from IT infrastructure resources, such as servers, network devices, storage systems, and applications.
+![](./images/axibase-and-r.png)
 
-The **source** folder contains the **atsd** package source code, and its documentation.
+## Table of Contents
 
-The **compiled** folder contains binary packages for linux and windows,
-and the installation instruction.
+* [Overview](#overview)
+* [Installation](#installation)
+* [Getting Started](#getting-started)
+* [Uninstall](#Uninstallation)
+* [License](#license)
+* [Examples](#examples)
 
-For more documentation and usage examples view [atsd_package.md](atsd_package.md), 
-[usage_example.md](usage_example.md)
-and [forecast_and_save_series_example.md](forecast_and_save_series_example.md).
+---
 
-### Overview
+## Overview
 
-The **atsd** package provides functions for retrieving time-series and related 
-meta-data such as entities, metrics, and tags from ATSD:
+**ATSD R Package** enables R developers to communicate with  [Axibase Time Series Database](https://axibase.com/docs/atsd/); a non-relational clustered database for storing performance measurements from IT infrastructure resources such as servers, network devices, storage systems, and applications.
 
-- [set_connection()](#set_connection), 
-  [save_connection()](#save_connection),
-  [show_connection()](#show_connection) - used to manage the connection with ATSD.
-  Set up and store the url, user name, and password. Configure cryptographic protocol 
-  and enforce SSL certificate validation in the case of https connection.
-- [query()](#query) - get historical data and forecasts from ATSD.
-- [get_metrics()](#get_metrics) - get metadata about the metrics collected by ATSD.
-- [get_entities()](#get_entities) - get metadata about the entities collected by ATSD.
-- [get_series_tags()](#get_series_tags) - get unique time series tags for the metric.
-- [to_zoo()](#to_zoo) - converts a time-series data frame to a `zoo` object for manipulating irregular time-series with built-in functions in the zoo package.
+* `/source` directory contains package source code and documentation.
+* `/compiled` directory contains binary packages for Linux and Windows as well as installation instructions.
 
+### Connection Functions
 
-### Installation
+Manage ATSD connection. Set up and store ATSD URL, username, and password. Configure cryptographic protocol and enforce SSL certificate validation when using HTTPS connection.
 
-Stable release available via [CRAN](http://cran.r-project.org/web/packages/atsd/index.html). 
-Install in R as:
-```
+* [`show_connection()`](atsd_package.md#show_connection()): 
+* [`set_connection()`](atsd_package.md#set_connection()): Prints current values of the connection parameters. These values can differ from values in the [configuration file](./source/inst/connection.config).
+* [`save_connection()`](atsd_package.md#save_connection()): Overrides connection parameters for the duration of the current R session without changing the configuration file.
+
+> Refer to [Configure Connection](atsd_package.md#configure-connection) for more information.
+
+### Package Functions
+
+**ATSD R Package** provides functions for storing and retrieving time series and related meta data in ATSD:
+
+* [`to_zoo()`](atsd_package.md#to_zoo()) : Builds a [`zoo` object](http://cran.r-project.org/web/packages/zoo/index.html) from the given Data Frame.
+* [`query()`](atsd_package.md#query()): Retrieves historical time series data or forecasts from ATSD as a Data Frame object.
+* [`get_metrics()`](atsd_package.md#get_metrics()): Retrieves a list of metrics and associated tags from ATSD, and converts them to Data Frame object.
+* [`get_entities()`](atsd_package.md#get_entities()): Retrieves a list of entities and associated tags from ATSD, and converts them to a Data Frame object.
+* [`get_series_tags()`](atsd_package.md#get_series_tags()): Retrieves series tags for the defined metric and returns a Data Frame object. For each time series, the function enumerates tags and last update time associated with the series.
+* [`save_series()`](atsd_package.md#save_series()): Saves time series from a Data Frame into ATSD.
+
+> For more information about package functions and their usage, refer to [Package Functions Documentation](atsd_package.md#functions).
+
+---
+
+## Installation
+
+Stable release available via [CRAN](http://cran.r-project.org/web/packages/atsd/index.html).
+
+```r
 install.packages("atsd")
 ```
 
-To install the alpha version from github:
-```
+To install the alpha version from GitHub:
+
+```r
 install.packages("devtools")
 library(devtools)
 install_github("axibase/atsd-api-r/source")
 ```
 
-The **atsd** package requires **RCurl**, **httr**, and **zoo** packages to be installed. 
-You could review installed packages with the `library()` command. 
-If **RCurl**, **httr**, or **zoo** are not installed, install them as follows:
-`install.packages(c("RCurl", "httr", "zoo"))`.
+`atsd` package depends upon the installation of the following packages:
 
-### Getting Started
+* [`rcurl`](https://cran.r-project.org/web/packages/RCurl/index.html)
+* [`httr`](https://cran.r-project.org/web/packages/httr/index.html)
+* [`zoo`](https://cran.r-project.org/web/packages/zoo/index.html)
 
-To start using the package, load it into R with the command `library(atsd)`.
+Review installed packages with the `library()` command.
 
-To view the complete package documentation, type `help(package = "atsd")`.
+To install required packages:
 
-The package vignette contains detailed documentation and usage examples.
-To view the vignette type, enter `browseVignettes(package = "atsd")`.
+```r
+install.packages(c("RCurl", "httr", "zoo"))
+```
 
-To get help for a particular function or package, type `?` followed by the function (package) name. For example,
-`?atsd`, `?set_connection`, `?query`, `?get_metrics`, `?get_entities` etc.
+---
 
-### Deinstallation
+## Getting Started
 
-To detach the package from the current R session: 
-`detach("package:atsd", unload = TRUE)`.
+Upon completion of package download, load the package into R to begin working with ATSD.
 
-To uninstall the package completely:
-`remove.packages("atsd", .libPaths())`.
+```r
+library(atsd)
+```
 
-### License
+Review package documentation:
 
-The **atsd** package is licensed under
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+```r
+help(package = "atsd")
+```
 
-### Usage examples
+Package [vignette](http://r-pkgs.had.co.nz/vignettes.html) contains detailed documentation and usage examples. View long-form documentation with `browseVignettes`:
 
-View the usage examples of the **atsd** package in [usage_example.md](usage_example.md)
-and [forecast_and_save_series_example.md](forecast_and_save_series_example.md).
+```r
+browseVignettes(package = "atsd")
+```
+
+For help with a particular function or package, use `?` syntax followed by the package name:
+
+* `?atsd`
+* `?set_connection`
+* `?query`
+* `?get_metrics`
+* `?get_entities`
+
+---
+
+## Uninstall
+
+To detach `atsd` from the current R session:
+
+```r
+detach("package:atsd", unload = TRUE)
+```
+
+To remove the package completely:
+
+```r
+remove.packages("atsd", .libPaths())
+```
+
+---
+
+## License
+
+**ATSD R Package** is licensed under the
+[Apache License `2.0`](http://www.apache.org/licenses/LICENSE-2.0).
+
+---
+
+## Examples
+
+* [Usage Examples](usage_example.md)
+* [Forecast and Series Save Examples](forecast_and_save_series_example.md)
+
+---

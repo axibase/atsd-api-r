@@ -1,13 +1,12 @@
 Package: atsd
-Title: Support Querying Axibase Time-Series Database
+Title: Support Querying Axibase Time Series Database
 Version: 1.1.8710
 Date: 2015-03-16
 Author: Axibase Corporation
 Maintainer: Mikhail Zvagelsky <mikhail.zvagelsky@axibase.com>
 URL: https://github.com/axibase/atsd-api-r/
 Description: Provides functions for retrieving time-series and related
-    meta-data such as entities, metrics, and tags from the Axibase
-    Time-Series Database (ATSD). ATSD is a non-relational clustered
+    meta-data such as entities, metrics, and tags from Axibase Time Series Database. ATSD is a non-relational clustered
     database used for storing performance measurements from IT infrastructure
     resources: servers, network devices, storage systems, and applications.
 Depends:

@@ -1,38 +1,38 @@
-### Usage Example
+# Usage Example
 
--   [Introduction](#introduction)
--   [Establish connection with ATSD](#establish-connection-with-atsd)
--   [Choose time series to explore](#choose-time-series-to-explore)
--   [Get time series from ATSD](#get-time-series-from-atsd)
--   [Aggregate the time series](#aggregate-the-time-series)
--   [Breakdown the time series by day](#breakdown-the-time-series-by-day)
--   [Compare actual series, baseline and forecast](#compare-actual-series-baseline-and-forecast)
+* [Introduction](#introduction)
+* [Establish Connection with ATSD](#establish-connection-with-atsd)
+* [Define Time Series](#define-time-series)
+* [Retrieve Time Series from ATSD](#retrieve-time-series-from-atsd)
+* [Perform Aggregation](#perform-aggregation)
+* [Parse Time Series by Day](#parse-time-series-by-day)
+* [Compare Series, Baseline and Forecast](#compare-series-baseline-and-forecast)
 
-### Introduction
+## Introduction
 
-In this demo we work with the **atsd** package to manipulate time series as zoo objects in R. First, we choose a metric, then we get a time series collected by ATSD for that metric, for a 1 week interval. After we compare the results we can aggregate the time series with R and with ATSD. We can then compute hourly baseline for the metric and compare the baseline with actual data and ATSD forecast for the last day.
+Use **ATSD R Package** to manipulate time series as `zoo` objects in R. Define a metric for a time series collected by ATSD during a one week interval. Aggregate the time series using R and ATSD to compute an hourly baseline for the metric and compare the baseline with actual data and an ATSD forecast for the final day.
 
-### Establish Connection with ATSD
+## Establish Connection with ATSD
 
-Start by attaching the required packages to R (we use the **pander** package to render tables in this document.)
+Begin by attaching the required packages to R: [`atsd`](https://cran.r-project.org/web//packages/atsd/index.html), [`pander`](https://cran.r-project.org/web//packages/pander/index.html), and [`zoo`](https://cran.r-project.org/web//packages/zoo/index.html).
 
-``` r
+```r
 require("atsd")
 require("pander")
 require("zoo")
 ```
 
-We store the ATSD url, user name, and password in a file. We can then establish a connection with the ATSD server:
+Store ATSD URL, username, and password in a configuration file and establish connection to the ATSD server:
 
-``` r
-set_connection(file = "/home/user001/8088_connection.txt")
+```r
+set_connection(file = "/home/john_doe/8088_connection.txt")
 ```
 
-### Choose Time Series to Explore
+## Define Time Series
 
-We are interested in metrics which measure disk usage. We can fetch a list of metrics with names like "disk...." from ATSD by command:
+Explore metrics which measure disk usage. Retrieve a list of metrics with `names like "disk"` from ATSD with the command:
 
-``` r
+```r
 metrics <- get_metrics(expression = "name like '^disk*'")
 #> Your request was successfully processed by server. Start parsing and filtering.
 #> Parsing and filtering done. Start converting to data frame.
@@ -55,9 +55,9 @@ pandoc.table(metrics, style = "grid")
 #> +-------------------+-----------+---------------------+---------------+--------------+
 ```
 
-The last metric seems interesting. Let’s get the time series and tags collected for the metric, and view the results.
+`disk_used_percent` is the desired metric. Retrieve the time series and tags collected for the metric, and view the results.
 
-``` r
+```r
 time_series <- get_series_tags(metric = "disk_used_percent")
 #> Your request was successfully processed by server. Start parsing and converting to data frame.
 #> Converting to data frame done.
@@ -81,29 +81,29 @@ pandoc.table(head(time_series), style = "grid")
 #> +--------------+---------------------+-------------------------------------+--------------------+
 ```
 
-Each table row describes a time series collected by ATSD. For example, the fourth row corresponds to a time series produced by the entity <tt><font color = "SaddleBrown">nurswgvml006</font></tt>  with tags <tt><font color = "SaddleBrown">file\_system = /dev/sdb1</font></tt>  and <tt><font color = "SaddleBrown">mount\_point = /media/datadrive</font></tt>. The last time the series was updated is <tt><font color = "SaddleBrown">2015-03-19 09:41:48</font></tt>.  We will now explore this time series.
+Each table row describes a time series collected by ATSD. For example, the fourth row corresponds to a time series produced by the entity `nurswgvml006`  with tags `file\_system = /dev/sdb1`  and `mount\_point = /media/datadrive`. The last time a series update occurred is `2015-03-19 09:41:48`.
 
-### Get Time Series from ATSD
+## Retrieve Time Series from ATSD
 
-To get the time series for the period of a week, we can make a request to ATSD:
+To get the time series for a one week period, make a request to ATSD:
 
-``` r
+```r
 week <- query(metric = "disk_used_percent",
               entity = "nurswgvml006",
               tags = c("file_system=/dev/sdb1", "mount_point=/media/datadrive"),
               selection_interval = "1-week",
               end_time = "date('2015-03-18 10:15:00')")
-#> 
+#>
 #> One of aggregate_interval or aggregate_statistics argument not provided to the function.
 #> So data will be fetched without aggregetion.
 #> If you need aggregation please specify both of aggregate_interval and
 #> aggregate_statistics arguments.
-#> 
-#> 
+#>
+#>
 #> Your request has succeeded. ATSD server response is: 200 OK.
 pandoc.table(head(week, 3), style = "grid")
-#> 
-#> 
+#>
+#>
 #> +---------------------+---------+-------------------+--------------+---------------+------------------+
 #> |      Timestamp      |  Value  |      metric       |    entity    |  file_system  |   mount_point    |
 #> +=====================+=========+===================+==============+===============+==================+
@@ -115,15 +115,17 @@ pandoc.table(head(week, 3), style = "grid")
 #> +---------------------+---------+-------------------+--------------+---------------+------------------+
 ```
 
-Drop the tags from the time series, then convert the time series to a [zoo](http://cran.r-project.org/web/packages/zoo/index.html) object ("ts" stands for "time series"):
+Exclude the tags from the time series, then convert the time series to a `zoo` object:
 
-``` r
+```r
 ts <- to_zoo(week)
 ```
 
-Look at the summary and chart:
+> Here, `ts` is short for time series.
 
-``` r
+Review the summary chart:
+
+```r
 summary(ts)
 #>      Index                           ts       
 #>  Min.   :2015-03-11 10:15:10   Min.   :53.78  
@@ -138,20 +140,20 @@ plot(ts, main = title, xlab = "", ylab = "disk_used_percent", col = "blue")
 
 ![](usage_example_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
-Is the time series regular (evenly spaced)?
+Determine if the time series is [regular](https://www.ibm.com/support/knowledgecenter/en/SSCRJU_3.2.1/com.ibm.swg.im.infosphere.streams.timeseries-toolkit.doc/doc/timeseries-regular.html).
 
-``` r
+```r
 is.regular(ts, strict = TRUE)
 #> [1] FALSE
 ```
 
-### Aggregate the Time Series
+## Perform Aggregation
 
-Now we want to compare the above last day, March 18, with the hourly baseline for the week of March 11 - March 17. We need to aggregate the data in order to get regular hourly spaced time series. We can export aggregated series from ATSD or aggregate using functions in the zoo package. Let’s try both and compare the results.
+Compare the last day of samples from the above series, March 18, 2015, with the hourly baseline for the week of March 11 to March 17, 2015. Aggregate the data in order to create a regular hourly spaced time series. Export aggregated series from ATSD or aggregate using functions in the `zoo` package. Both methods are performed here, and compared [below](#compare-series-baseline-and-forecast).
 
-First, get the aggregated time series from ATSD:
+First, retrieve the aggregated time series from ATSD:
 
-``` r
+```r
 ats <- query(metric = "disk_used_percent", 
             entity = "nurswgvml006",
             tags = c("file_system=/dev/sdb1", "mount_point=/media/datadrive"),
@@ -159,21 +161,21 @@ ats <- query(metric = "disk_used_percent",
             end_time = "date('2015-03-18 10:15:00')",
             aggregate_interval = "1-Hour",
             aggregate_statistics = "Avg")
-#> 
+#>
 #> Your request has succeeded. ATSD server response is: 200 OK.
 ats <- to_zoo(ats, value = "Avg")
 ```
 
 Now, aggregate the initial time series `ts` with R:
 
-``` r
+```r
 new_index <- as.POSIXct(trunc(time(ts), "hours"))
 ats2 <- aggregate(ts, by = new_index, FUN = mean)
 ```
 
-Let's compare `ats` and `ats2`:
+Compare `ats` and `ats2`:
 
-``` r
+```r
 ats[1:5]
 #> 2015-03-11 11:00:00 2015-03-11 12:00:00 2015-03-11 13:00:00 2015-03-11 14:00:00 2015-03-11 15:00:00 
 #>            53.96615            53.99960            54.00836            53.93799            53.94511
@@ -182,45 +184,47 @@ ats2[1:5]
 #>            53.88623            53.96615            53.99960            54.00836            53.93798
 ```
 
-We see that `ats2` has an additional value at the beginning (at 2015-03-11 10:00:00, value = 53.88623).
+`ats2` has an additional value at  `2015-03-11 10:00:00`, `value = 53.88623`.
 
-We drop the first value in `ats2` and compare the results:
+Exclude the first value in `ats2` and compare the results:
 
-``` r
+```r
 all(time(ats) == time(ats2[-1]))
 #> [1] TRUE
 max(abs(coredata(ats) - coredata(ats2[-1])))
 #> [1] 2.211253e-07
 ```
 
-We see that all other values are the same. The difference between values is close to zero. 
+All other values are near identical, what small differences do exist are close to zero.
 
-Now, we plot the aggregated time series (note that the vertical range decreases).
+Plot the aggregated time series.
 
-``` r
+> Note that the vertical range decreases.
+
+```r
 y_label <- "disk_used_percent hourly aggregated"
 plot(ats, main = title, xlab = "", ylab = y_label, col = "blue", lwd = 2)
 ```
 
 ![](usage_example_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
-### Breakdown the Time Series by Day
+### Parse Time Series by Day
 
-Now, we will breakdown the time series `ats` to daily data and create a multivariate zoo object, which has a column for each day.
+Break the time series `ats` apart into daily data and create a multivariate `zoo` object with a column for each day.
 
-``` r
+```r
 first_day <- as.POSIXct(trunc(start(ats), "days"))
 HOUR <- 60 * 60
 ats <- merge(zoo(, seq(first_day, first_day + (8 * 24 - 1) * HOUR, by = HOUR)), ats)
-ats <- aggregate(ats, function(x) {as.POSIXct(paste0("2015-03-18 ", substr(x, 12, 19)))}, 
+ats <- aggregate(ats, function(x) {as.POSIXct(paste0("2015-03-18 ", substr(x, 12, 19)))},
                  FUN = function(x) {x})
 ```
 
-Let’s view the resulting zoo and its chart:
+View the resulting `zoo` object and associated chart:
 
-``` r
+```r
 print(ats)
-#>                                                                                            
+#>
 #> 2015-03-18 00:00:00       NA 53.87805 54.02252 54.13851 54.27356 54.37668 54.32872 54.45166
 #> 2015-03-18 01:00:00       NA 53.97078 53.95187 54.17292 54.25887 54.39392 54.36676 54.50093
 #> 2015-03-18 02:00:00       NA 53.90453 53.96316 54.05644 54.26432 54.38639 54.42095 54.55313
@@ -245,24 +249,24 @@ print(ats)
 #> 2015-03-18 21:00:00 54.03241 54.15265 54.29814 54.35363 54.49582 54.50734 54.69607       NA
 #> 2015-03-18 22:00:00 56.14941 56.18821 56.26381 56.53661 56.66231 56.53390 56.48320       NA
 #> 2015-03-18 23:00:00 54.06050 54.17400 54.32740 54.38397 54.48619 54.57323 54.68118       NA
-plot(ats, screens = 1, col = rainbow(8), main = "daily charts for a week", 
+plot(ats, screens = 1, col = rainbow(8), main = "daily charts for a week",
      xlab = "", ylab = y_label, lwd = 2)
 legend(x = "topleft", legend = "last day: 2015-03-18", lty = 1, lwd = 2, col = rainbow(8)[8])
 ```
 
 ![](usage_example_files/figure-markdown_github/unnamed-chunk-16-1.png)
 
-### Compare Actual Series, Baseline, and Forecast
+## Compare Series, Baseline, and Forecast
 
-It is relatively straightforward to compute a baseline:
+Compute a baseline:
 
-``` r
+```r
 baseline <- zoo(rowMeans(ats[, 1:7], na.rm = TRUE), time(ats))
 ```
 
-Let’s retrieve the forecast for the last day from ATSD:
+Retrieve the forecast for the final day from ATSD:
 
-``` r
+```r
 forecast <- query(metric = "disk_used_percent", 
                   entity = "nurswgvml006",
                   tags = c("file_system=/dev/sdb1", "mount_point=/media/datadrive"),
@@ -271,14 +275,14 @@ forecast <- query(metric = "disk_used_percent",
                   aggregate_interval = "1-Hour",
                   aggregate_statistics = "Avg",
                   export_type = "Forecast")
-#> 
+#>
 #> Your request has succeeded. ATSD server response is: 200 OK.
 forecast <- to_zoo(forecast, value = "Avg")
 ```
 
-Now we can compare the last day with the baseline and forecast:
+Now, compare the last day with the baseline and forecast:
 
-``` r
+```r
 plot(merge(baseline, forecast, ats[, 8]), screens = 1, col = rainbow(3), lwd = 2,
      main = "last day vs. hourly baseline vs forecast", xlab = "", ylab = y_label)
 legend(x = "topleft", lty = 1, lwd = 2, col = rainbow(3),
