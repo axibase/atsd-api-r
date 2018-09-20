@@ -7,7 +7,7 @@
 * [Overview](#overview)
 * [Installation](#installation)
 * [Getting Started](#getting-started)
-* [Uninstall](#Uninstallation)
+* [Uninstall](#Uninstall)
 * [License](#license)
 * [Examples](#examples)
 
@@ -24,9 +24,9 @@
 
 Manage ATSD connection. Set up and store ATSD URL, username, and password. Configure cryptographic protocol and enforce SSL certificate validation when using HTTPS connection.
 
-* [`show_connection()`](atsd_package.md#show_connection()): Prints current values of the connection parameters. These values can differ from values in the [configuration file](./source/inst/connection.config).
-* [`set_connection()`](atsd_package.md#set_connection()): Overrides connection parameters for the duration of the current R session without changing the configuration file. If called without arguments, the function sets the connection parameters from the configuration file, otherwise `file` argument defines the `connection.config` file to use.
-* [`save_connection()`](atsd_package.md#save_connection()): Overrides connection parameters for the duration of the current R session without changing the configuration file.
+* [`show_connection()`](atsd_package.md#show_connection): Prints current values of the connection parameters. These values can differ from values in the [configuration file](./source/inst/connection.config).
+* [`set_connection()`](atsd_package.md#set_connection): Overrides connection parameters for the duration of the current R session without changing the configuration file. If called without arguments, the function sets the connection parameters from the configuration file, otherwise `file` argument defines the `connection.config` file to use.
+* [`save_connection()`](atsd_package.md#save_connection): Overrides connection parameters for the duration of the current R session without changing the configuration file.
 
 > Refer to [Configure Connection](atsd_package.md#configure-connection) for more information.
 
